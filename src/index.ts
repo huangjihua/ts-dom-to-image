@@ -16,7 +16,7 @@ interface RenderOptions {
 }
 
 class DomToImage {
-  public options;
+  public options: RenderOptions;
   /**
    * constructor
    * @param props 渲染参数
@@ -27,6 +27,7 @@ class DomToImage {
 
   toSvg() {
     return Promise.resolve()
+      .then((): any => util.cloneNode(this.options.targetNode, this.options.filter, true))
   }
 
   toPng() {
@@ -50,6 +51,8 @@ class DomToImage {
   }
 
   private drawCanvas() {
+    return this.toSvg().then(clone => {
 
+    })
   }
 }
