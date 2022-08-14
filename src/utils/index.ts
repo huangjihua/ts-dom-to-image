@@ -122,13 +122,13 @@ function newInliner() {
   }
 
   function readUrls(string) {
-    var result = [];
+    var result: any = [];
     var match;
     while ((match = URL_REGEX.exec(string)) !== null) {
       result.push(match[1]);
     }
     return result.filter(function (url) {
-      return !util.isDataUrl(url);
+      // return !util.isDataUrl(url);
     });
   }
 
