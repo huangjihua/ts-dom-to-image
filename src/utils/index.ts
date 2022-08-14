@@ -76,7 +76,7 @@ function newFontFaces() {
 
     function selectWebFontRules(styleSheets) {
       const cssRules = styleSheets.cssRules
-      let result = [];
+      let result: any = [];
       for (const rule of cssRules) {
         if (rule.type === CSSRule.FONT_FACE_RULE) {
           result.push(rule)
@@ -100,7 +100,7 @@ function newFontFaces() {
     };
   }
 }
-}
+
 
 
 /**
