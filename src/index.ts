@@ -1,4 +1,5 @@
-import * as util from './utils/tool';
+import * as util from './utils';
+import { cloneNode } from './cloneNode';
 
 interface RenderOptions {
   targetNode: HTMLElement; // 目标node
@@ -15,7 +16,7 @@ interface RenderOptions {
   scale?: number; // 自定义图像缩放比例,用于保障图像质量
 }
 
-class DomToImage {
+export default class DomToImage {
   public options: RenderOptions;
   /**
    * constructor
@@ -27,7 +28,7 @@ class DomToImage {
 
   toSvg() {
     return Promise.resolve()
-      .then((): any => util.cloneNode(this.options.targetNode, this.options.filter, true))
+      .then((): any => cloneNode(this.options.targetNode, this.options.filter, true))
   }
 
   toPng() {

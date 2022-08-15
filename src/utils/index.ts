@@ -1,7 +1,127 @@
 
 import { xhr } from './xhr';
-import * as util from './tool';
-const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+import { FILE_ENUM_TYPE } from "./type";
+
+export const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
+/**
+ * 转义字符串(针对特定符号)
+ * @param props  string
+ * @returns string
+ */
+export const escape = (props: string) => props.replace(/([.*+?^${}()|\[\]\/\\])/g, '\\$1');
+/**
+ * 延迟
+ * @param delayTime 延迟时间（毫秒）
+ */
+export const delay = (delayTime: number) => {
+  return (args: unknown) => new Promise((resolve, reject) => {
+    setTimeout(() => {
+      resolve(args)
+    }, delayTime)
+  })
+}
+export const uid = () => {
+  let index = 0;
+  /* see http://stackoverflow.com/a/6248722/2519373 */
+  const fourNumberRandom = `0000${(Math.random() * Math.pow(36, 4) << 0).toString(36)}`.slice(-4)
+  return ` u0000${fourNumberRandom}${index++}`
+}
+/**
+ * 数组化
+ * @param arrayLike 
+ * @returns array
+ */
+export const asArray = (arrayLike: any) => {
+  const array: any = [];
+  for (const item of arrayLike) {
+    array.push(item);
+  }
+  return array
+}
+/**
+ *  转义 Xhtml
+ * @param props String
+ * @returns 
+ */
+export const escapeXhtml = (props: string) => props.replace(/#/g, '%23').replace(/\n/g, '%0A');
+/**
+ *  处理stylePropertyValue带px
+ * @param node HTMLElement
+ * @param styleProperty  string
+ * @return number
+ */
+export const px = (node: HTMLElement, styleProperty: string) => {
+  const val = window.getComputedStyle(node).getPropertyValue(styleProperty)
+  return parseFloat(val.replace('px', ''))
+}
+export const width = (node: HTMLElement) => {
+  const leftBorder = px(node, 'border-left-width');
+  const rightBorder = px(node, 'border-right-width');
+  return node.scrollWidth + leftBorder + rightBorder;
+}
+
+export const height = (node: HTMLElement) => {
+  const topBorder = px(node, 'border-top-width');
+  const bottomBorder = px(node, 'border-bottom-width');
+  return node.scrollHeight + topBorder + bottomBorder;
+}
+
+export const dataAsBase64Url = (content: string, type: FILE_ENUM_TYPE) => `data:${type};base64,${content}`
+
+/**
+ * 解析URL扩展
+ * @param url string
+ */
+export const parseExtension = (url: string) => {
+  const match = /\.([^\.\/]*?)$/g.exec(url);
+  return match ? match[1] : ''
+}
+
+export const isDataUrl = (url: string) => {
+  return url.search(/^(data:)/) !== -1;
+}
+
+/**
+ * 返回文件的类型
+ * @param url string  文件 URL
+ * @returns  string
+ */
+export const ParsefileType = (url: string) => {
+  const extension = parseExtension(url).toLocaleUpperCase()
+  return FILE_ENUM_TYPE[extension] || ''
+}
+
+/**
+ * 创建 img
+ * @param url img url base64 or  url
+ * @returns img promise
+ */
+export const createImage = (url: string) => {
+  if (url === 'data:,') return Promise.resolve()
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    // 处理跨域图片，注意：IOS 不支持该属性
+    img.crossOrigin = 'anonymous';
+    img.onload = () => {
+      resolve(img);
+    }
+    img.onerror = reject
+    img.src = url;
+  })
+}
+
+export const createLinkUrl = (url: string, baseUrl: string): string => {
+  var doc = document.implementation.createHTMLDocument();
+  var base = doc.createElement('base');
+  doc.head.appendChild(base);
+  var a = doc.createElement('a');
+  doc.body.appendChild(a);
+  base.href = baseUrl;
+  a.href = url;
+  console.log(url);
+  return a.href;
+}
+
 /**
  * 图转成Base64编码
  * @param props :{
@@ -20,7 +140,7 @@ export const imgToBase64Encode = (props: {
   imagePlaceholder?: string  // base64
 }) => {
   xhr({
-    ...props, successHandle: (request, resolve) => {
+    ...props, successHandle: (request: { response: Blob; }, resolve: (arg0: string | ArrayBuffer | null) => void) => {
       const encoder = new FileReader();
       encoder.onloadend = function () {
         let content = encoder.result;
@@ -30,146 +150,4 @@ export const imgToBase64Encode = (props: {
       encoder.readAsDataURL(request.response);
     }
   })
-}
-
-/**
- * 嵌入字体
- * @param node 
- * @returns 
- */
-export const embedFonts = (node) => {
-  return newFontFaces().resolveAll().then(function (cssText) {
-    var styleNode = document.createElement('style');
-    node.appendChild(styleNode);
-    styleNode.appendChild(document.createTextNode(cssText));
-    return node;
-  });
-}
-
-
-function newFontFaces() {
-  return {
-    resolveAll: resolveAll,
-    impl: {
-      readAll: readAll,
-    },
-  };
-
-  function resolveAll() {
-    return readAll()
-      .then(function (webFonts) {
-        return Promise.all(
-          webFonts.map(webFont => webFont.resolve())
-        );
-      })
-      .then(function (cssStrings) {
-        return cssStrings.join('\n');
-      });
-  }
-
-  function readAll() {
-    return Promise.resolve(document.styleSheets)
-      .then(selectWebFontRules)
-      .then(function (rules) {
-        return rules.map(newWebFont);
-      });
-
-    function selectWebFontRules(styleSheets) {
-      const cssRules = styleSheets.cssRules
-      let result: any = [];
-      for (const rule of cssRules) {
-        if (rule.type === CSSRule.FONT_FACE_RULE) {
-          result.push(rule)
-        } else if (rule.style.getPropertyValue('src').search(URL_REGEX) !== -1) {
-          result.push(rule)
-        }
-      }
-      return result;
-    }
-  }
-
-  function newWebFont(webFontRule) {
-    return {
-      resolve: function resolve() {
-        var baseUrl = (webFontRule.parentStyleSheet || {}).href;
-        return newInliner().inlineAll(webFontRule.cssText, baseUrl);
-      },
-      src: function () {
-        return webFontRule.style.getPropertyValue('src');
-      },
-    };
-  }
-}
-
-
-
-/**
-   * 外联资源转内联
-   */
-function newInliner() {
-
-  return {
-    inlineAll: inlineAll,
-    shouldProcess: shouldProcess,
-    impl: {
-      readUrls: readUrls,
-      inline: inline,
-    },
-  };
-
-  function shouldProcess(string) {
-    return string.search(URL_REGEX) !== -1;
-  }
-
-  function readUrls(string) {
-    var result: any = [];
-    var match;
-    while ((match = URL_REGEX.exec(string)) !== null) {
-      result.push(match[1]);
-    }
-    return result.filter(function (url) {
-      // return !util.isDataUrl(url);
-    });
-  }
-
-  function inline(string, url, baseUrl, get) {
-    return Promise.resolve(url)
-      .then(function (url) {
-        return baseUrl ? util.createLinkUrl(url, baseUrl) : url;
-      })
-      .then(get || imgToBase64Encode)
-      .then(function (data) {
-        return util.dataAsBase64Url(data, util.ParsefileType(url));
-      })
-      .then(function (dataUrl) {
-        return string.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
-      });
-
-    function urlAsRegex(url) {
-      return new RegExp(
-        '(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))',
-        'g'
-      );
-    }
-  }
-
-  function inlineAll(string, baseUrl, get?) {
-    if (nothingToInline()) return Promise.resolve(string);
-    console.log(string, baseUrl);
-    return Promise.resolve(string)
-      .then(readUrls)
-      .then(function (urls) {
-        var done = Promise.resolve(string);
-        urls.forEach(function (url) {
-          done = done.then(function (string) {
-            return inline(string, url, baseUrl, get);
-          });
-        });
-        return done;
-      });
-
-    function nothingToInline() {
-      return !shouldProcess(string);
-    }
-  }
 }
