@@ -2,11 +2,29 @@
   "name": "ts-dom-to-image",
   "version": "1.0.0",
   "description": "dom to image with typescript",
-  "main": "index.js",
+  "main": "dist/dom-to-image.cjs.js",
+  "module": "dist/dom-to-image.esm.js",
+  "brower": "dist/dom-to-image.js",
   "scripts": {
+    "start": "rollup -c -w",
+    "build": "rollup -c && npm run copy",
+    "copy": "cp dist/dom-to-image.esm.js demo && cp package.json dist",
+    "publish": "node scripts/publish.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": [
+    "dom-to-image"
+  ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "commander": "^9.4.0",
+    "rollup": "^2.78.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-typescript": "^1.0.1",
+    "shelljs": "^0.8.5",
+    "tslib": "^2.4.0",
+    "typescript": "^4.7.4"
+  }
 }
