@@ -1,5 +1,5 @@
-import { URL_REGEX, imgToBase64Encode } from "./utils";
 import * as util from './utils';
+import { createLinkUrl, imgToEncode } from "./operateImage";
 /**
  * 嵌入字体
  * @param node 
@@ -21,7 +21,7 @@ export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void
       for (const rule of cssRules) {
         if (rule.type === CSSRule.FONT_FACE_RULE) {
           newFonts.push(newWebFont(rule))
-        } else if (rule.style.getPropertyValue('src').search(URL_REGEX) !== -1) {
+        } else if (rule.style.getPropertyValue('src').search(util.URL_REGEX) !== -1) {
           newFonts.push(newWebFont(rule))
         }
       }
@@ -32,8 +32,9 @@ export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void
   }
   const cssText = Promise.all(
     readAllFont.map((webFont: { resolve: () => Promise<any>; }) => webFont.resolve()))
-    .then((cssStrings: any[]) => cssStrings.join('\n'))
-  return cssText.then(function (cssText: string) {
+    .then((cssStrings: any[]) => cssStrings.join('\n'));
+
+  return cssText.then((cssText: string) => {
     var styleNode = document.createElement('style');
     node.appendChild(styleNode);
     styleNode.appendChild(document.createTextNode(cssText));
@@ -53,58 +54,34 @@ export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void
 function newInliner() {
   return {
     inlineAll: inlineAll,
-    shouldProcess: (str: string) => str.search(URL_REGEX) !== -1,
-    impl: {
-      readUrls: readUrls,
-      inline: inline,
-    },
+    shouldProcess: (str: string) => str.search(util.URL_REGEX) !== -1,
+    // impl: {
+    //   readUrls: readUrls,
+    //   inline: inline,
+    // },
   };
 
-  function readUrls(string: string) {
-    var result: any = [];
-    var match;
-    while ((match = URL_REGEX.exec(string)) !== null) {
-      result.push(match[1]);
-    }
-    return result.filter(function (url: string) {
-      return !util.isDataUrl(url);
-    });
+
+
+  async function inline(str: string, url: string, baseUrl: string) {
+    url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+    let result = ''
+    const imgData: string = await imgToEncode({ url: url })
+    const base64 = util.dataAsBase64Url(imgData, util.ParsefileType(url));
+    result = str.replace(util.urlAsRegex(url), '$1' + base64 + '$3');
+    return result;
   }
 
-  function inline(str: string, url: string, baseUrl: string, get: any) {
-    return Promise.resolve(url)
-      .then(function (url: string) {
-        return baseUrl ? util.createLinkUrl(url, baseUrl) : url;
-      })
-      .then(get || imgToBase64Encode)
-      .then(function (data: string) {
-        return util.dataAsBase64Url(data, util.ParsefileType(url));
-      })
-      .then(function (dataUrl: string) {
-        return str.replace(urlAsRegex(url), '$1' + dataUrl + '$3');
-      });
-
-    function urlAsRegex(url: string) {
-      return new RegExp(
-        '(url\\([\'"]?)(' + util.escape(url) + ')([\'"]?\\))',
-        'g'
-      );
-    }
-  }
-
-  function inlineAll(str: string, baseUrl: any, get?: any) {
-    if (!(str.search(URL_REGEX) !== -1)) return Promise.resolve(str);
+  function inlineAll(str: string, baseUrl: any) {
+    if (!(str.search(util.URL_REGEX) !== -1)) return Promise.resolve(str);
     console.log(str, baseUrl);
-    return Promise.resolve(str)
-      .then(readUrls)
-      .then(function (urls: any[]) {
-        var done = Promise.resolve(str);
-        urls.forEach(function (url: any) {
-          done = done.then(function (str: string) {
-            return inline(str, url, baseUrl, get);
-          });
-        });
-        return done;
+    const urls = util.readUrls(str);
+    let done = Promise.resolve(str);
+    urls.forEach((url: string) => {
+      done = done.then((str: string) => {
+        return inline(str, url, baseUrl);
       });
+    });
+    return done;
   }
 }

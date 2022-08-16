@@ -77,8 +77,38 @@ export const parseExtension = (url: string) => {
   return match ? match[1] : ''
 }
 
+/**
+ * 判断字符串是否已 data:开头
+ * @param url 
+ * @returns {boolean}
+ */
 export const isDataUrl = (url: string) => {
   return url.search(/^(data:)/) !== -1;
+}
+
+/**
+ * 处理 URL正则
+ * @param url 
+ * @returns {RegExpConstructor}
+ */
+export const urlAsRegex = (url: string) => {
+  return new RegExp('(url\\([\'"]?)(' + escape(url) + ')([\'"]?\\))', 'g');
+}
+
+/**
+ * 读取字符并解析出其中 URL
+ * @param string 
+ * @returns {Array}
+ */
+export const readUrls = (string: string) => {
+  const result: any = [];
+  let match;
+  while ((match = URL_REGEX.exec(string)) !== null) {
+    result.push(match[1]);
+  }
+  return result.filter(function (url: string) {
+    return !isDataUrl(url);
+  });
 }
 
 /**
@@ -92,62 +122,20 @@ export const ParsefileType = (url: string) => {
 }
 
 /**
- * 创建 img
- * @param url img url base64 or  url
- * @returns img promise
+ * 转toBlob
+ * @param canvas 
+ * @returns 
  */
-export const createImage = (url: string) => {
-  if (url === 'data:,') return Promise.resolve()
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    // 处理跨域图片，注意：IOS 不支持该属性
-    img.crossOrigin = 'anonymous';
-    img.onload = () => {
-      resolve(img);
-    }
-    img.onerror = reject
-    img.src = url;
-  })
-}
+export const toBlob = (canvas: HTMLCanvasElement) => {
+  return new Promise(resolve => {
+    var binaryString = window.atob(canvas?.toDataURL().split(',')[1]);
+    var length = binaryString.length;
+    var binaryArray = new Uint8Array(length);
+    for (var i = 0; i < length; i++)
+      binaryArray[i] = binaryString.charCodeAt(i);
 
-export const createLinkUrl = (url: string, baseUrl: string): string => {
-  var doc = document.implementation.createHTMLDocument();
-  var base = doc.createElement('base');
-  doc.head.appendChild(base);
-  var a = doc.createElement('a');
-  doc.body.appendChild(a);
-  base.href = baseUrl;
-  a.href = url;
-  console.log(url);
-  return a.href;
-}
-
-/**
- * 图转成Base64编码
- * @param props :{
-  url: string,
-  httpTimeout?: number,
-  cacheBust?: boolean,
-  useCredentials?: boolean,
-  imagePlaceholder?: string  // base64
-}
- */
-export const imgToBase64Encode = (props: {
-  url: string,
-  httpTimeout?: number,
-  cacheBust?: boolean,
-  useCredentials?: boolean,
-  imagePlaceholder?: string  // base64
-}) => {
-  xhr({
-    ...props, successHandle: (request: { response: Blob; }, resolve: (arg0: string | ArrayBuffer | null) => void) => {
-      const encoder = new FileReader();
-      encoder.onloadend = function () {
-        let content = encoder.result;
-        if (content && typeof content === 'string') content = content.split(/,/)[1]
-        resolve(content);
-      };
-      encoder.readAsDataURL(request.response);
-    }
-  })
+    resolve(new Blob([binaryArray], {
+      type: 'image/png'
+    }));
+  });
 }
