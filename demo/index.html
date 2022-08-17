@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+		<script src="./dom-to-image.esm.js" type="module"  ></script>
+	
+		<style>
+			.c-m-box{
+				width: 240px;
+			}
+			.c-m-img{
+				width: 100px;
+				height: 100px;
+				border-radius: 50%;
+				border:solid 1px gray;
+			}
+			.outline {
+			    outline: 2px solid red;
+			    outline-offset: -2px;
+			}
+			.c-m-list{
+				width: 320px;
+				height: 140px;
+				/* background-color: aliceblue; */
+			}
+			.c-m-name{
+				font-size: 15px;
+				color:blue;
+			}
+			.c-m-title{
+				font-size: 12px;
+				color:indianred;
+			}
+			.btn-list{
+				display: flex;
+				justify-content: space-around;
+					
+			}
+			.img-type{
+				color:blueviolet;
+				font-size:16px;
+			}
+		</style>
+		
+	</head>
+	<body>
+		
+		<div id="cmBox" class="c-m-box">
+		    <div class="c-m-list">
+		        <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
+				<img src="./img/2.png"  alt="" class="c-m-img">
+				<!-- <img src="https://images.fastcompany.net/image/upload/w_1280,f_auto,q_auto,fl_lossy/w_596,c_limit,q_auto:best,f_auto/fc/3034007-inline-i-applelogo.jpg" alt="长天" class="c-m-img"> -->
+		        <div class="c-m-title">自动生成 <i class="img-type"></i> 图片...</div>
+		    </div>
+			<div class="btn-list">
+				<button class="button" onclick="createImg('toSvg')">生成SVG图片</button>
+				<button class="button" onclick="createImg('toJpg')">生成JPG图片</button>
+				<button class="button" onclick="createImg('toPng')">生成PNG图片</button>
+				<button class="button" onclick="createImg('toCanvas')">生成canvas图片</button>
+				<!-- <button class="button" onclick="createImg('toBlob')">生成toBlob图片</button> -->
+			</div>
+		</div>
+  <script type="module">
+    import DomToImage from './dom-to-image.esm.js';
+    console.log(DomToImage)
+    var node = document.querySelector('.c-m-list')
+    window.domtoimage = new DomToImage({targetNode:node,bgColor:'#fff'});
+  </script>
+	<script type="text/javascript">
+  
+    //imagePlaceholder:'https://www.pngkey.com/png/detail/233-2332677_image-500580-placeholder-transparent.png'
+		function createImg(type){
+			
+			document.querySelector('.img-type').innerHTML = type.replace('to','')
+			window.domtoimage[type]()
+				.then(function (dataUrl) {
+					if(type==='toCanvas'){
+						document.body.appendChild(dataUrl);
+					}else if(type==='toBlob'){
+					   const imageUrl = URL.createObjectURL(dataUrl)
+					   console.log(imageUrl);
+		 
+					}else if(type==='toSvg'){
+						console.log(dataUrl);
+						let svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,','').replace(/\%0A/g, '');
+						document.body.appendChild(createDocumentFragment(svg));
+		 
+					}else {
+						var img = new Image();
+						img.src = dataUrl;
+						document.body.appendChild(img);
+						document.body.appendChild(document.createElement('br'));
+					}
+					
+				})
+				.catch(function (error) {
+					console.error('oops, something went wrong!', error);
+				});
+		}
+		
+		function createDocumentFragment(txt) {
+		  const template = `<div class='child'>${txt}</div>`;
+		  let frag = document.createRange().createContextualFragment(template);
+		  return frag;
+		 }
+ 
+   </script>
+	</body>
+</html>
