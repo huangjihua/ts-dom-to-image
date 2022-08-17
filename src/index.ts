@@ -34,9 +34,9 @@ export default class DomToImage {
   toSvg() {
     return Promise.resolve()
       .then((): any => cloneNode(this.options.targetNode, this.options.filter, true))
-      .then(embedFonts)
+      // .then(embedFonts)
       .then(inlineImages)
-      .then(this.applyOptions)
+      .then(this.applyOptions.bind(this))
       .then(clone => {
         clone.setAttribute('style', '')
         return createSvgEncodeUrl(clone,

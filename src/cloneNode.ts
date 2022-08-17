@@ -1,5 +1,5 @@
-import { createImage, uid } from './utils/tool'
-
+import { createImage } from './operateImage';
+import { uid } from './utils'
 
 /**
  * 克隆元素样式

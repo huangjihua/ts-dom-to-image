@@ -5,9 +5,14 @@ import { createLinkUrl, imgToEncode } from "./operateImage";
  * @param node 
  * @returns 
  */
-export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void; }) => {
-  const readAllFont: any = (styleSheets: { cssRules: any; href: string; }) => {
-    const cssRules = styleSheets.cssRules
+export const embedFonts = (node: HTMLElement) => {
+  const readAllFont: any = (styleSheets: StyleSheetList) => {
+    const cssRules: Array<any> = []
+    for (const sheet of styleSheets) {
+      for (const cssRule of sheet.cssRules) {
+        cssRules.push(cssRule, sheet.cssRules)
+      }
+    }
     let newFonts = []
     const newWebFont = (rule: { parentStyleSheet: any; cssText: any; style: { getPropertyValue: (arg0: string) => string; }; }) => {
       const resolve = () => {
@@ -21,17 +26,18 @@ export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void
       for (const rule of cssRules) {
         if (rule.type === CSSRule.FONT_FACE_RULE) {
           newFonts.push(newWebFont(rule))
-        } else if (rule.style.getPropertyValue('src').search(util.URL_REGEX) !== -1) {
+        } else if (util.checkStrUrl(rule.style.getPropertyValue('src'))) {
           newFonts.push(newWebFont(rule))
         }
       }
     } catch (e) {
-      console.log('Error while reading CSS rules from ' + styleSheets.href, e);
+      console.log('Error while reading CSS rules from ' + styleSheets, e);
     }
     return newFonts;
   }
+  const pNewFonts = readAllFont(document.styleSheets)
   const cssText = Promise.all(
-    readAllFont.map((webFont: { resolve: () => Promise<any>; }) => webFont.resolve()))
+    pNewFonts.map((webFont: { resolve: () => Promise<any>; }) => webFont.resolve()))
     .then((cssStrings: any[]) => cssStrings.join('\n'));
 
   return cssText.then((cssText: string) => {
@@ -54,11 +60,6 @@ export const embedFonts = (node: { appendChild: (arg0: HTMLStyleElement) => void
 function newInliner() {
   return {
     inlineAll: inlineAll,
-    shouldProcess: (str: string) => str.search(util.URL_REGEX) !== -1,
-    // impl: {
-    //   readUrls: readUrls,
-    //   inline: inline,
-    // },
   };
 
 
@@ -73,7 +74,7 @@ function newInliner() {
   }
 
   function inlineAll(str: string, baseUrl: any) {
-    if (!(str.search(util.URL_REGEX) !== -1)) return Promise.resolve(str);
+    if (!util.checkStrUrl(str)) return Promise.resolve(str);
     console.log(str, baseUrl);
     const urls = util.readUrls(str);
     let done = Promise.resolve(str);

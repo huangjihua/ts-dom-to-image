@@ -87,13 +87,20 @@ export const isDataUrl = (url: string) => {
 }
 
 /**
- * 处理 URL正则
+ * URL正则
  * @param url 
  * @returns {RegExpConstructor}
  */
 export const urlAsRegex = (url: string) => {
   return new RegExp('(url\\([\'"]?)(' + escape(url) + ')([\'"]?\\))', 'g');
 }
+
+/**
+ * 检查字符串内是否存在 URL 文件资源
+ * @param str 
+ * @returns 
+ */
+export const checkStrUrl = (str: string) => str.search(URL_REGEX) !== -1
 
 /**
  * 读取字符并解析出其中 URL

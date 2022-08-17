@@ -17,7 +17,7 @@ async function inline(str: string, url: string, baseUrl: string) {
  * @returns 
  */
 export const inlineFileAll = (str: string, baseUrl?: any) => {
-  if (!(str.search(util.URL_REGEX) !== -1)) return Promise.resolve(str);
+  if (!util.checkStrUrl(str)) return Promise.resolve(str);
   console.log(str, baseUrl);
   const urls = util.readUrls(str);
   let done = Promise.resolve(str);

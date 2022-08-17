@@ -12,7 +12,7 @@ export const createSvgEncodeUrl = (node: HTMLElement, width: number, height: num
       return new XMLSerializer().serializeToString(node);
     })
     .then(util.escapeXhtml)
-    .then(xhtml => `<foreignObject x="0" y="0" width="100%" height="100%">${xhtml}`)
+    .then(xhtml => `<foreignObject x="0" y="0" width="100%" height="100%">${xhtml}</foreignObject>`)
     .then(foreignObject => `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}">${foreignObject}</svg>`)
     .then(svg => `data:image/svg+xml;charset=utf-8,${svg}`);
 }

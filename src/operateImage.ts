@@ -103,6 +103,7 @@ export const newImages = () => {
 
     return inlineBackground(node)
       .then(function () {
+        console.log(node)
         if (node instanceof HTMLImageElement)
           return newImage(node).inline();
         else
@@ -127,9 +128,7 @@ export const newImages = () => {
             node.style.getPropertyPriority('background')
           );
         })
-        .then(function () {
-          return node;
-        });
+        .then(() => node);
     }
   }
 }
