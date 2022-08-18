@@ -10,7 +10,7 @@ export const embedFonts = (node: HTMLElement) => {
     const cssRules: Array<any> = []
     for (const sheet of styleSheets) {
       for (const cssRule of sheet.cssRules) {
-        cssRules.push(cssRule, sheet.cssRules)
+        cssRules.push.bind(cssRule, sheet.cssRules)
       }
     }
     let newFonts = []
@@ -41,7 +41,7 @@ export const embedFonts = (node: HTMLElement) => {
     .then((cssStrings: any[]) => cssStrings.join('\n'));
 
   return cssText.then((cssText: string) => {
-    var styleNode = document.createElement('style');
+    const styleNode = document.createElement('style');
     node.appendChild(styleNode);
     styleNode.appendChild(document.createTextNode(cssText));
     return node;

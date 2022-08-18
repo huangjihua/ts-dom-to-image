@@ -24,7 +24,7 @@ export const uid = () => {
   let index = 0;
   /* see http://stackoverflow.com/a/6248722/2519373 */
   const fourNumberRandom = `0000${(Math.random() * Math.pow(36, 4) << 0).toString(36)}`.slice(-4)
-  return ` u0000${fourNumberRandom}${index++}`
+  return `u0000${fourNumberRandom}${index++}`
 }
 /**
  * 数组化
@@ -129,16 +129,16 @@ export const ParsefileType = (url: string) => {
 }
 
 /**
- * 转toBlob
+ * canvas转Blob
  * @param canvas 
  * @returns 
  */
 export const toBlob = (canvas: HTMLCanvasElement) => {
   return new Promise(resolve => {
-    var binaryString = window.atob(canvas?.toDataURL().split(',')[1]);
-    var length = binaryString.length;
-    var binaryArray = new Uint8Array(length);
-    for (var i = 0; i < length; i++)
+    const binaryString = window.atob(canvas?.toDataURL().split(',')[1]);
+    const length = binaryString.length;
+    const binaryArray = new Uint8Array(length);
+    for (let i = 0; i < length; i++)
       binaryArray[i] = binaryString.charCodeAt(i);
 
     resolve(new Blob([binaryArray], {

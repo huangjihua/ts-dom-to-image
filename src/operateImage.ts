@@ -8,8 +8,8 @@ import { inlineFileAll } from './inlineUrlFiles'
  * @param url img url base64 or  url
  * @returns img promise
  */
-export const createImage = (url: string) => {
-  if (url === 'data:,') return Promise.resolve()
+export const createImage = (url: string): Promise<any> => {
+  if (url === 'data:,') return Promise.resolve(null)
   return new Promise((resolve, reject) => {
     const img = new Image();
     // 处理跨域图片，注意：IOS 不支持该属性
@@ -29,10 +29,10 @@ export const createImage = (url: string) => {
  * @returns 
  */
 export const createLinkUrl = (url: string, baseUrl: string): string => {
-  var doc = document.implementation.createHTMLDocument();
-  var base = doc.createElement('base');
+  const doc = document.implementation.createHTMLDocument();
+  const base = doc.createElement('base');
   doc.head.appendChild(base);
-  var a = doc.createElement('a');
+  const a = doc.createElement('a');
   doc.body.appendChild(a);
   base.href = baseUrl;
   a.href = url;
@@ -100,23 +100,9 @@ export const newImages = () => {
 
   function inlineAll(node: HTMLElement) {
     if (!(node instanceof Element)) return Promise.resolve(node);
-
-    return inlineBackground(node)
-      .then(function () {
-        console.log(node)
-        if (node instanceof HTMLImageElement)
-          return newImage(node).inline();
-        else
-          return Promise.all(
-            util.asArray(node.childNodes).map((child: HTMLElement) => {
-              return inlineAll(child);
-            })
-          );
-      });
-
-    // 处理样式中的图片资源
-    function inlineBackground(node: HTMLElement) {
-      var background = node.style.getPropertyValue('background');
+    // 处理样式中的背景图片资源
+    const inlineBackground = (node: HTMLElement) => {
+      const background = node.style.getPropertyValue('background');
 
       if (!background) return Promise.resolve(node);
 
@@ -130,6 +116,21 @@ export const newImages = () => {
         })
         .then(() => node);
     }
+    return inlineBackground(node)
+      .then(function () {
+        console.log(node)
+        if (node instanceof HTMLImageElement)
+          return newImage(node).inline();
+        else
+          return Promise.all(
+            util.asArray(node.childNodes).map((child: HTMLElement) => {
+              return inlineAll(child);
+            })
+          );
+      });
+
+
+
   }
 }
 
