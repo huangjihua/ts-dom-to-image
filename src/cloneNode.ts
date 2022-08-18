@@ -14,8 +14,8 @@ const cloneStyle = (sourceNode: CSSStyleDeclaration, cloneNode: CSSStyleDeclarat
     for (const key of sourceNode) {
       if (sourceNode.getPropertyValue(key)) {
         cloneNode.setProperty(key,
-          cloneNode.getPropertyValue(key),
-          cloneNode.getPropertyPriority(key)
+          sourceNode.getPropertyValue(key),
+          sourceNode.getPropertyPriority(key)
         );
       }
     }
