@@ -33,7 +33,7 @@ const uid = () => {
     let index = 0;
     /* see http://stackoverflow.com/a/6248722/2519373 */
     const fourNumberRandom = `0000${(Math.random() * Math.pow(36, 4) << 0).toString(36)}`.slice(-4);
-    return ` u0000${fourNumberRandom}${index++}`;
+    return `u0000${fourNumberRandom}${index++}`;
 };
 /**
  * 数组化
@@ -129,22 +129,47 @@ const ParsefileType = (url) => {
     return FILE_ENUM_TYPE[extension] || '';
 };
 /**
- * 转toBlob
+ * canvas转Blob
  * @param canvas
  * @returns
  */
 const toBlob = (canvas) => {
     return new Promise(resolve => {
-        var binaryString = window.atob(canvas === null || canvas === void 0 ? void 0 : canvas.toDataURL().split(',')[1]);
-        var length = binaryString.length;
-        var binaryArray = new Uint8Array(length);
-        for (var i = 0; i < length; i++)
+        const binaryString = window.atob(canvas === null || canvas === void 0 ? void 0 : canvas.toDataURL().split(',')[1]);
+        const length = binaryString.length;
+        const binaryArray = new Uint8Array(length);
+        for (let i = 0; i < length; i++)
             binaryArray[i] = binaryString.charCodeAt(i);
         resolve(new Blob([binaryArray], {
             type: 'image/png'
         }));
     });
 };
+
+/******************************************************************************
+Copyright (c) Microsoft Corporation.
+
+Permission to use, copy, modify, and/or distribute this software for any
+purpose with or without fee is hereby granted.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
+REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
+AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
+INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
+LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
+OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+PERFORMANCE OF THIS SOFTWARE.
+***************************************************************************** */
+
+function __awaiter(thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+}
 
 const xhr = (props) => {
     let { url } = props;
@@ -184,41 +209,6 @@ const xhr = (props) => {
     });
 };
 
-/******************************************************************************
-Copyright (c) Microsoft Corporation.
-
-Permission to use, copy, modify, and/or distribute this software for any
-purpose with or without fee is hereby granted.
-
-THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES WITH
-REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF MERCHANTABILITY
-AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR ANY SPECIAL, DIRECT,
-INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES WHATSOEVER RESULTING FROM
-LOSS OF USE, DATA OR PROFITS, WHETHER IN AN ACTION OF CONTRACT, NEGLIGENCE OR
-OTHER TORTIOUS ACTION, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
-PERFORMANCE OF THIS SOFTWARE.
-***************************************************************************** */
-
-function __awaiter(thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-}
-
-function inline(str, url, baseUrl) {
-    return __awaiter(this, void 0, void 0, function* () {
-        url = baseUrl ? createLinkUrl(url, baseUrl) : url;
-        let result = '';
-        const imgData = yield imgToEncode({ url: url });
-        const base64 = dataAsBase64Url(imgData, ParsefileType(url));
-        result = str.replace(urlAsRegex(url), '$1' + base64 + '$3');
-        return result;
-    });
-}
 /**
  * 处理所有资源文件
  * @param str
@@ -231,6 +221,21 @@ const inlineFileAll = (str, baseUrl) => {
     console.log(str, baseUrl);
     const urls = readUrls(str);
     let done = Promise.resolve(str);
+    /**
+     *
+     * @param str
+     * @param url
+     * @param baseUrl
+     * @returns
+     */
+    const inline = (str, url, baseUrl) => __awaiter(void 0, void 0, void 0, function* () {
+        url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+        let result = '';
+        const imgData = yield imgToEncode({ url: url });
+        const base64 = dataAsBase64Url(imgData, ParsefileType(url));
+        result = str.replace(urlAsRegex(url), '$1' + base64 + '$3');
+        return result;
+    });
     urls.forEach((url) => {
         done = done.then((str) => {
             return inline(str, url, baseUrl);
@@ -246,7 +251,7 @@ const inlineFileAll = (str, baseUrl) => {
  */
 const createImage = (url) => {
     if (url === 'data:,')
-        return Promise.resolve();
+        return Promise.resolve(null);
     return new Promise((resolve, reject) => {
         const img = new Image();
         // 处理跨域图片，注意：IOS 不支持该属性
@@ -265,10 +270,10 @@ const createImage = (url) => {
  * @returns
  */
 const createLinkUrl = (url, baseUrl) => {
-    var doc = document.implementation.createHTMLDocument();
-    var base = doc.createElement('base');
+    const doc = document.implementation.createHTMLDocument();
+    const base = doc.createElement('base');
     doc.head.appendChild(base);
-    var a = doc.createElement('a');
+    const a = doc.createElement('a');
     doc.body.appendChild(a);
     base.href = baseUrl;
     a.href = url;
@@ -326,6 +331,17 @@ const newImages = () => {
     function inlineAll(node) {
         if (!(node instanceof Element))
             return Promise.resolve(node);
+        // 处理样式中的背景图片资源
+        const inlineBackground = (node) => {
+            const background = node.style.getPropertyValue('background');
+            if (!background)
+                return Promise.resolve(node);
+            return inlineFileAll(background)
+                .then((inlined) => {
+                node.style.setProperty('background', inlined, node.style.getPropertyPriority('background'));
+            })
+                .then(() => node);
+        };
         return inlineBackground(node)
             .then(function () {
             console.log(node);
@@ -336,17 +352,6 @@ const newImages = () => {
                     return inlineAll(child);
                 }));
         });
-        // 处理样式中的图片资源
-        function inlineBackground(node) {
-            var background = node.style.getPropertyValue('background');
-            if (!background)
-                return Promise.resolve(node);
-            return inlineFileAll(background)
-                .then((inlined) => {
-                node.style.setProperty('background', inlined, node.style.getPropertyPriority('background'));
-            })
-                .then(() => node);
-        }
     }
 };
 const inlineImages = (node) => {
@@ -354,120 +359,138 @@ const inlineImages = (node) => {
 };
 
 /**
- * 克隆元素样式
- * @param sourceNode
- * @param cloneNode
+ *  设置克隆元素样式
+ * @param  {CSSStyleDeclaration} sourceNodeCssStyle
+ * @param  {CSSStyleDeclaration} cloneNodeCssStyle
  */
-const cloneStyle = (sourceNode, cloneNode) => {
-    if (sourceNode.cssText) {
-        cloneNode.cssText = sourceNode.cssText;
+const setCloneNodeStyleProperty = (sourceNodeCssStyle, cloneNodeCssStyle) => {
+    if (sourceNodeCssStyle.cssText) {
+        cloneNodeCssStyle.cssText = sourceNodeCssStyle.cssText;
     }
     else {
-        // copyProperties
-        for (const key of sourceNode) {
-            if (sourceNode.getPropertyValue(key)) {
-                cloneNode.setProperty(key, cloneNode.getPropertyValue(key), cloneNode.getPropertyPriority(key));
+        for (const key of sourceNodeCssStyle) {
+            if (sourceNodeCssStyle.getPropertyValue(key)) {
+                cloneNodeCssStyle.setProperty(key, sourceNodeCssStyle.getPropertyValue(key), sourceNodeCssStyle.getPropertyPriority(key));
             }
         }
     }
 };
 /**
- *
+ * 处理元素伪类情况
+ * @param {HTMLElement} original  用于获取计算样式的Element。
+ * @param {HTMLElement} clone  克隆元素（目标对象）
+ */
+const processNodePseudoStyle = (original, clone) => {
+    if (!(clone instanceof Element))
+        return clone;
+    const eachPseudoStyles = () => [':before', ':after'].forEach(item => nodePseudoStyle(item));
+    /**
+     * 处理伪类
+     * @param pseudoName 指定一个要匹配的伪元素的字符串 如:before
+     * @returns {void}
+     */
+    function nodePseudoStyle(pseudoName) {
+        const style = window.getComputedStyle(original, pseudoName);
+        const content = style.getPropertyValue('content');
+        if (content === '' || content === 'none')
+            return;
+        const className = uid();
+        clone.className = clone.className + ' ' + className;
+        const styleElement = document.createElement('style');
+        styleElement.appendChild(getFormatPseudoStyle(className, pseudoName, style));
+        clone.appendChild(styleElement);
+        /**
+         *  获取格式化后的TextNode
+         * @param {string} className 样式名
+         * @param {string} pseudoName 伪类名称
+         * @param {CSSStyleDeclaration} style 样式声明对象
+         * @returns {TextNode}
+         */
+        function getFormatPseudoStyle(className, pseudoName, style) {
+            const selector = `.${className}:${pseudoName}`;
+            const content = style.getPropertyValue('content');
+            let cssText = '';
+            if (style.cssText) {
+                cssText = `${style.cssText} content: ${content};`;
+            }
+            else {
+                for (const key of style) {
+                    cssText += `${key}:${style.getPropertyValue(key)}${style.getPropertyPriority(key) ? ' !important' : ''};`;
+                }
+            }
+            return document.createTextNode(`${selector}{${cssText}}`);
+        }
+    }
+    // 处理表单元素
+    function copyUserInput() {
+        if (original instanceof HTMLTextAreaElement)
+            clone.innerHTML = original.value;
+        if (original instanceof HTMLInputElement)
+            clone.setAttribute("value", original.value);
+    }
+    // 处理SVG情况
+    function fixSvg() {
+        if (!(clone instanceof SVGElement))
+            return;
+        clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+        if (!(clone instanceof SVGRectElement))
+            return;
+        ['width', 'height'].forEach((attribute) => {
+            var value = clone.getAttribute(attribute);
+            if (!value)
+                return;
+            clone.style.setProperty(attribute, value);
+        });
+    }
+    return Promise.resolve()
+        .then(() => setCloneNodeStyleProperty(window.getComputedStyle(original), clone.style))
+        .then(eachPseudoStyles)
+        .then(copyUserInput)
+        .then(fixSvg)
+        .then(() => clone);
+};
+
+/**
+ * 克隆元素
  * @param {HTMLElement} node
  * @param {object} filter
  * @param {boolean} root
  * @returns
  */
-const cloneNode = (node, filter, root = false) => {
+const cloneNode = (node, filter, root = false) => __awaiter(void 0, void 0, void 0, function* () {
     if (!root && filter && !filter(node))
-        return Promise.resolve();
-    return Promise.resolve(node)
-        .then(node => {
-        return node instanceof HTMLCanvasElement ? createImage(node.toDataURL()) : node.cloneNode(false);
-    })
-        .then((clone) => {
-        var children = node.childNodes; // 子节点
-        if (children.length === 0)
-            return Promise.resolve(clone);
-        for (const child of children) {
-            cloneNode(child, filter)
-                .then(childClone => {
-                if (childClone)
-                    clone.appendChild(childClone);
-            });
-        }
+        return;
+    var children = node.childNodes;
+    const clone = node instanceof HTMLCanvasElement ? yield createImage(node.toDataURL()) : node.cloneNode(false);
+    processNodePseudoStyle(node, clone);
+    if (children.length === 0)
         return clone;
-    })
-        .then((clone) => processClone(node, clone));
-    /**
-     * 深度克隆
-     * @param {HTMLElement} original  原对象
-     * @param {HTMLElement} clone  克隆对象
-     */
-    function processClone(original, clone) {
-        if (!(clone instanceof Element))
-            return clone;
-        // 克隆伪类元素，处理样式
-        function clonePseudoElements() {
-            [':before', ':after'].forEach(function (element) {
-                clonePseudoElement(element);
-            });
-            function clonePseudoElement(element) {
-                const style = window.getComputedStyle(original, element);
-                const content = style.getPropertyValue('content');
-                if (content === '' || content === 'none')
-                    return;
-                const className = uid();
-                clone.className = clone.className + ' ' + className;
-                const styleElement = document.createElement('style');
-                styleElement.appendChild(formatPseudoElementStyle(className, element, style));
-                clone.appendChild(styleElement);
-                function formatPseudoElementStyle(className, element, style) {
-                    const selector = '.' + className + ':' + element;
-                    const content = style.getPropertyValue('content');
-                    let cssText = '';
-                    // 格式化样式
-                    if (style.cssText) {
-                        cssText = `${style.cssText} content: ${content};`;
-                    }
-                    else {
-                        for (const key of style) {
-                            cssText += `${key}:${style.getPropertyValue(key)}${style.getPropertyPriority(key) ? ' !important' : ''};`;
-                        }
-                    }
-                    return document.createTextNode(selector + '{' + cssText + '}');
-                }
+    for (const child of children) {
+        cloneNode(child, filter)
+            .then((childClone) => {
+            if (childClone) {
+                clone.appendChild(childClone);
             }
-        }
-        // 处理用户输入
-        function copyUserInput() {
-            if (original instanceof HTMLTextAreaElement)
-                clone.innerHTML = original.value;
-            if (original instanceof HTMLInputElement)
-                clone.setAttribute("value", original.value);
-        }
-        // 处理SVG情况
-        function fixSvg() {
-            if (!(clone instanceof SVGElement))
-                return;
-            clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
-            if (!(clone instanceof SVGRectElement))
-                return;
-            ['width', 'height'].forEach((attribute) => {
-                var value = clone.getAttribute(attribute);
-                if (!value)
-                    return;
-                clone.style.setProperty(attribute, value);
-            });
-        }
-        return Promise.resolve()
-            .then(() => cloneStyle(window.getComputedStyle(original), clone.style))
-            .then(clonePseudoElements)
-            .then(copyUserInput)
-            .then(fixSvg)
-            .then(() => clone);
+        });
     }
-};
+    return clone;
+    // return Promise.resolve(node)
+    //   .then(node => {
+    //     return node instanceof HTMLCanvasElement ? createImage(node.toDataURL()) : node.cloneNode(false)
+    //   })
+    //   .then((clone: any) => {
+    //     const children = node.childNodes; // 子节点
+    //     if (children.length === 0) return Promise.resolve(clone);
+    //     for (const child of children) {
+    //       cloneNode(child as HTMLElement, filter)
+    //         .then((childClone: HTMLElement | void) => {
+    //           if (childClone) clone.appendChild(childClone)
+    //         })
+    //     }
+    //     return clone;
+    //   })
+    //   .then((clone: HTMLElement) => processNodePseudoStyle(node, clone));
+});
 
 /**
  * 生成 SVG，base64
