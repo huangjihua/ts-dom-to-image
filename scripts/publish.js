@@ -31,8 +31,8 @@ console.log('newVersion:', newVersion);
 function publish() {
   shelljs.sed(
     '-i',
-    '"name": "dom-to-image"',
-    '"name": "@hank/dom-to-image"',
+    '"name": "ts-dom-to-image"',
+    '"name": "@hank/ts-dom-to-image"',
     targetFile
   );
   shelljs.sed(
