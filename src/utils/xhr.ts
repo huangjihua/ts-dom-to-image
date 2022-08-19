@@ -1,3 +1,8 @@
+/**
+ *  XMLHttpRequest
+ * @param props 
+ * @returns 
+ */
 export const xhr = (props: {
   url: string,
   httpTimeout?: number,
@@ -42,7 +47,7 @@ export const xhr = (props: {
       }
 
     }
-    function fail(message) {
+    function fail(message: string) {
       console.error(message);
       resolve('');
     }

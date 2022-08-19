@@ -1,4 +1,4 @@
-import { createImage } from './operateImage';
+import { createImage } from './process-image';
 import { processNodePseudoStyle } from './process-style';
 
 /**

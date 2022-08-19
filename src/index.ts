@@ -1,7 +1,7 @@
 import * as util from './utils';
 import { cloneNode } from './cloneNode';
 import { embedFonts } from './embedFonts';
-import { createImage, inlineImages } from './operateImage';
+import { createImage, checkElementImgToInline } from './process-image';
 import { createSvgEncodeUrl } from './createSvg';
 import { FILE_ENUM_TYPE } from './utils/type';
 interface RenderOptions {
@@ -34,8 +34,8 @@ export default class DomToImage {
   toSvg() {
     return Promise.resolve()
       .then((): any => cloneNode(this.options.targetNode, this.options.filter, true))
-      // .then(embedFonts)
-      .then(inlineImages)
+      .then(embedFonts)
+      .then(checkElementImgToInline) // 图片和背景图转内联形式
       .then(this.applyOptions.bind(this))
       .then(clone => {
         clone.setAttribute('style', '')
@@ -90,7 +90,11 @@ export default class DomToImage {
         return canvas;
       })
   }
-
+  /**
+   * 克隆元素的 style
+   * @param {HTMLElement} clone 
+   * @returns 
+   */
   private applyOptions(clone: HTMLElement) {
     if (this.options.bgColor) clone.style.backgroundColor = this.options.bgColor;
     if (this.options.width) clone.style.width = this.options.width + 'px';
@@ -101,6 +105,7 @@ export default class DomToImage {
     }
     return clone;
   }
+
   private creatCanvas() {
     const canvas = document.createElement('canvas');
     canvas.width = (this.options.width || util.width(this.options.targetNode)) * this.options.scale;

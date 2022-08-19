@@ -1,5 +1,5 @@
 import * as util from './utils';
-import { createLinkUrl, imgToEncode } from "./operateImage";
+import { createLinkUrl, readUrlFileToEncode } from "./process-image";
 /**
  * 嵌入字体
  * @param node 
@@ -67,7 +67,7 @@ function newInliner() {
   async function inline(str: string, url: string, baseUrl: string) {
     url = baseUrl ? createLinkUrl(url, baseUrl) : url;
     let result = ''
-    const imgData: string = await imgToEncode({ url: url })
+    const imgData: string = await readUrlFileToEncode({ url: url })
     const base64 = util.dataAsBase64Url(imgData, util.ParsefileType(url));
     result = str.replace(util.urlAsRegex(url), '$1' + base64 + '$3');
     return result;
