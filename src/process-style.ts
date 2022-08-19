@@ -65,12 +65,12 @@ export const processNodePseudoStyle = (original: HTMLElement, clone: HTMLElement
     }
   }
   // 处理表单元素
-  function copyUserInput() {
+  function formCloneElementValue() {
     if (original instanceof HTMLTextAreaElement) clone.innerHTML = original.value;
     if (original instanceof HTMLInputElement) clone.setAttribute("value", original.value);
   }
 
-  // 处理SVG情况
+  // 处理SVG
   function fixSvg() {
     if (!(clone instanceof SVGElement)) return;
     clone.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
@@ -84,7 +84,7 @@ export const processNodePseudoStyle = (original: HTMLElement, clone: HTMLElement
   return Promise.resolve()
     .then(() => setCloneNodeStyleProperty(window.getComputedStyle(original), clone.style))
     .then(eachPseudoStyles)
-    .then(copyUserInput)
+    .then(formCloneElementValue)
     .then(fixSvg)
     .then(() => clone)
 }
