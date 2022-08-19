@@ -91,7 +91,7 @@ export default class DomToImage {
       })
   }
   /**
-   * 克隆元素的 style
+   * 传入的样式属性赋值到克隆元素
    * @param {HTMLElement} clone 
    * @returns 
    */
