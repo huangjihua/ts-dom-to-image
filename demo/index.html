@@ -21,7 +21,7 @@
 			}
 			.c-m-list{
 				width: 320px;
-				height: 140px;
+				height: 180px;
 				/* background-color: aliceblue; */
 			}
 			.c-m-name{
@@ -61,6 +61,12 @@
       background-color: red;
       z-index: -1;
      }
+		 input {
+			 margin-top:20px;
+			 display:block;
+			 width: 100px;
+			 border:1px solid gray; 
+		 }
 		</style>
 		
 	</head>
@@ -71,6 +77,7 @@
 		        <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
 				<img src="./img/2.png"  alt="" class="c-m-img">
         <div class="img2"></div>
+				<input value=""/>
 				<!-- <img src="https://images.fastcompany.net/image/upload/w_1280,f_auto,q_auto,fl_lossy/w_596,c_limit,q_auto:best,f_auto/fc/3034007-inline-i-applelogo.jpg" alt="长天" class="c-m-img"> -->
 		        <div class="c-m-title">自动生成 <i class="img-type"></i> 图片...</div>
 		    </div>
@@ -78,7 +85,7 @@
 				<button class="button" onclick="createImg('toSvg')">生成SVG图片</button>
 				<button class="button" onclick="createImg('toJpg')">生成JPG图片</button>
 				<button class="button" onclick="createImg('toPng')">生成PNG图片</button>
-				<button class="button" onclick="createImg('toCanvas')">生成canvas图片</button>
+				<button class="button" onclick="createImg('toCanvas')">生成canvas展示</button>
 				<!-- <button class="button" onclick="createImg('toBlob')">生成toBlob图片</button> -->
 			</div>
 		</div>

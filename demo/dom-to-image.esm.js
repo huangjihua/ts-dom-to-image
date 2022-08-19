@@ -171,6 +171,11 @@ function __awaiter(thisArg, _arguments, P, generator) {
     });
 }
 
+/**
+ *  XMLHttpRequest
+ * @param props
+ * @returns
+ */
 const xhr = (props) => {
     let { url } = props;
     const { httpTimeout = 30000, cacheBust = false, useCredentials = false, successHandle = () => { }, failHandle = () => { }, } = props;
@@ -210,44 +215,33 @@ const xhr = (props) => {
 };
 
 /**
- * 处理所有资源文件
- * @param str
- * @param baseUrl
- * @returns
+ * 检测字符内所有的url File,并转成内联的 base64地址
+ * @param {string} str
+ * @param {string} baseUrl
+ * @returns {Promise<string>}
  */
-const inlineFileAll = (str, baseUrl) => {
+const checkStrUrlFile = (str, baseUrl) => {
     if (!checkStrUrl(str))
         return Promise.resolve(str);
     console.log(str, baseUrl);
     const urls = readUrls(str);
     let done = Promise.resolve(str);
-    /**
-     *
-     * @param str
-     * @param url
-     * @param baseUrl
-     * @returns
-     */
-    const inline = (str, url, baseUrl) => __awaiter(void 0, void 0, void 0, function* () {
-        url = baseUrl ? createLinkUrl(url, baseUrl) : url;
-        let result = '';
-        const imgData = yield imgToEncode({ url: url });
-        const base64 = dataAsBase64Url(imgData, ParsefileType(url));
-        result = str.replace(urlAsRegex(url), '$1' + base64 + '$3');
-        return result;
-    });
     urls.forEach((url) => {
-        done = done.then((str) => {
-            return inline(str, url, baseUrl);
-        });
+        done = done.then((str) => __awaiter(void 0, void 0, void 0, function* () {
+            url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+            const imgData = yield readUrlFileToEncode({ url: url });
+            const base64 = dataAsBase64Url(imgData, ParsefileType(url));
+            return str.replace(urlAsRegex(url), '$1' + base64 + '$3');
+        }));
+        return done;
     });
     return done;
 };
 
 /**
- * 创建 img
+ * 创建image
  * @param url img url base64 or  url
- * @returns img promise
+ * @returns {Promise<HTMLImageElement>}
  */
 const createImage = (url) => {
     if (url === 'data:,')
@@ -281,82 +275,63 @@ const createLinkUrl = (url, baseUrl) => {
     return a.href;
 };
 /**
- * 图转成Base64编码
- * @param props :{
-  url: string,
-  httpTimeout?: number,
-  cacheBust?: boolean,
-  useCredentials?: boolean,
-  imagePlaceholder?: string  // base64
-}
+ * 读取Url 文件并转成Base64字符串
+ * @param {Object} props
 @return {Promise}
  */
-const imgToEncode = (props) => xhr(Object.assign(Object.assign({}, props), { successHandle: (request, resolve) => {
+const readUrlFileToEncode = (props) => xhr(Object.assign(Object.assign({}, props), { successHandle: (request, resolve) => {
         const encoder = new FileReader();
+        // 该事件在读取操作结束时（
         encoder.onloadend = function () {
             let content = encoder.result;
             if (content && typeof content === 'string')
                 content = content.split(/,/)[1];
             resolve(content);
         };
+        // 开始读取指定的Blob中的内容。一旦完成，result属性中将包含一个data: URL 格式的 Base64 字符串以表示所读取文件的内容。
         encoder.readAsDataURL(request.response);
     } }));
 /**
- * 生成新图像
- * @returns
+ *  检测元素的样式内的背景图，并转换为内联的 Base64形式
+ * @param node HTMLELment
  */
-const newImages = () => {
-    return {
-        inlineAll: inlineAll,
-    };
-    function newImage(element) {
-        return {
-            inline: inline
-        };
-        function inline() {
-            if (isDataUrl(element.src))
-                return Promise.resolve();
-            return Promise.resolve(element.src)
-                .then((url) => imgToEncode({ url: url }))
-                .then((data) => dataAsBase64Url(data, ParsefileType(element.src)))
-                .then((dataUrl) => {
-                return new Promise(function (resolve, reject) {
-                    element.onload = resolve;
-                    element.onerror = reject;
-                    element.src = dataUrl;
-                });
-            });
-        }
+const checkElementStyleBackgroup = (node) => __awaiter(void 0, void 0, void 0, function* () {
+    if (node instanceof HTMLImageElement)
+        return imgSrcToInlineBase64(node);
+    if (node.style) {
+        const background = node.style.getPropertyValue('background');
+        if (!background)
+            return node;
+        const value = yield checkStrUrlFile(background);
+        if (value)
+            node.style.setProperty('background', value, node.style.getPropertyPriority('background'));
     }
-    function inlineAll(node) {
-        if (!(node instanceof Element))
-            return Promise.resolve(node);
-        // 处理样式中的背景图片资源
-        const inlineBackground = (node) => {
-            const background = node.style.getPropertyValue('background');
-            if (!background)
-                return Promise.resolve(node);
-            return inlineFileAll(background)
-                .then((inlined) => {
-                node.style.setProperty('background', inlined, node.style.getPropertyPriority('background'));
-            })
-                .then(() => node);
-        };
-        return inlineBackground(node)
-            .then(function () {
-            console.log(node);
-            if (node instanceof HTMLImageElement)
-                return newImage(node).inline();
-            else
-                return Promise.all(asArray(node.childNodes).map((child) => {
-                    return inlineAll(child);
-                }));
+    // node.childNodes.forEach((child: any) => checkElementStyleBackgroup(child as HTMLElement))
+    const result = yield Promise.all(asArray(node.childNodes).filter((child) => child.NodeName != '#text').map((child) => {
+        return checkElementStyleBackgroup(child);
+    }));
+    console.log(result);
+    return node;
+});
+/**
+ * 图片src地址转换成Base64并重新赋值给图片
+ * @param {HTMLImageElement} element
+ * @returns {Promise<string>}
+ */
+function imgSrcToInlineBase64(element) {
+    if (isDataUrl(element.src))
+        return Promise.resolve();
+    return Promise.resolve(element.src)
+        .then((url) => readUrlFileToEncode({ url: url }))
+        .then((data) => dataAsBase64Url(data, ParsefileType(element.src)))
+        .then((dataUrl) => {
+        return new Promise(function (resolve, reject) {
+            element.onload = resolve;
+            element.onerror = reject;
+            element.src = dataUrl;
         });
-    }
-};
-const inlineImages = (node) => {
-    return newImages().inlineAll(node).then(() => node);
-};
+    });
+}
 
 /**
  *  设置克隆元素样式
@@ -422,13 +397,13 @@ const processNodePseudoStyle = (original, clone) => {
         }
     }
     // 处理表单元素
-    function copyUserInput() {
+    function formCloneElementValue() {
         if (original instanceof HTMLTextAreaElement)
             clone.innerHTML = original.value;
         if (original instanceof HTMLInputElement)
             clone.setAttribute("value", original.value);
     }
-    // 处理SVG情况
+    // 处理SVG
     function fixSvg() {
         if (!(clone instanceof SVGElement))
             return;
@@ -445,7 +420,7 @@ const processNodePseudoStyle = (original, clone) => {
     return Promise.resolve()
         .then(() => setCloneNodeStyleProperty(window.getComputedStyle(original), clone.style))
         .then(eachPseudoStyles)
-        .then(copyUserInput)
+        .then(formCloneElementValue)
         .then(fixSvg)
         .then(() => clone);
 };
@@ -474,23 +449,86 @@ const cloneNode = (node, filter, root = false) => __awaiter(void 0, void 0, void
         });
     }
     return clone;
-    // return Promise.resolve(node)
-    //   .then(node => {
-    //     return node instanceof HTMLCanvasElement ? createImage(node.toDataURL()) : node.cloneNode(false)
-    //   })
-    //   .then((clone: any) => {
-    //     const children = node.childNodes; // 子节点
-    //     if (children.length === 0) return Promise.resolve(clone);
-    //     for (const child of children) {
-    //       cloneNode(child as HTMLElement, filter)
-    //         .then((childClone: HTMLElement | void) => {
-    //           if (childClone) clone.appendChild(childClone)
-    //         })
-    //     }
-    //     return clone;
-    //   })
-    //   .then((clone: HTMLElement) => processNodePseudoStyle(node, clone));
 });
+
+/**
+ * 嵌入字体
+ * @param node
+ * @returns
+ */
+const embedFonts = (node) => {
+    const readAllFont = (styleSheets) => {
+        const cssRules = [];
+        for (const sheet of styleSheets) {
+            for (const cssRule of sheet.cssRules) {
+                cssRules.push.bind(cssRule, sheet.cssRules);
+            }
+        }
+        let newFonts = [];
+        const newWebFont = (rule) => {
+            const resolve = () => {
+                const baseUrl = (rule.parentStyleSheet || {}).href;
+                return newInliner().inlineAll(rule.cssText, baseUrl);
+            };
+            const src = () => rule.style.getPropertyValue('src');
+            return { resolve, src };
+        };
+        try {
+            for (const rule of cssRules) {
+                if (rule.type === CSSRule.FONT_FACE_RULE) {
+                    newFonts.push(newWebFont(rule));
+                }
+                else if (checkStrUrl(rule.style.getPropertyValue('src'))) {
+                    newFonts.push(newWebFont(rule));
+                }
+            }
+        }
+        catch (e) {
+            console.log('Error while reading CSS rules from ' + styleSheets, e);
+        }
+        return newFonts;
+    };
+    const pNewFonts = readAllFont(document.styleSheets);
+    const cssText = Promise.all(pNewFonts.map((webFont) => webFont.resolve()))
+        .then((cssStrings) => cssStrings.join('\n'));
+    return cssText.then((cssText) => {
+        const styleNode = document.createElement('style');
+        node.appendChild(styleNode);
+        styleNode.appendChild(document.createTextNode(cssText));
+        return node;
+    });
+};
+/**
+   * 外联资源转内联
+   */
+function newInliner() {
+    return {
+        inlineAll: inlineAll,
+    };
+    function inline(str, url, baseUrl) {
+        return __awaiter(this, void 0, void 0, function* () {
+            url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+            let result = '';
+            const imgData = yield readUrlFileToEncode({ url: url });
+            const base64 = dataAsBase64Url(imgData, ParsefileType(url));
+            result = str.replace(urlAsRegex(url), '$1' + base64 + '$3');
+            return result;
+        });
+    }
+    function inlineAll(str, baseUrl) {
+        if (!checkStrUrl(str))
+            return Promise.resolve(str);
+        console.log(str, baseUrl);
+        const urls = readUrls(str);
+        let done = Promise.resolve(str);
+        urls.forEach((url) => {
+            done = done.then((str) => {
+                return inline(str, url, baseUrl);
+            });
+        });
+        return done;
+    }
+}
 
 /**
  * 生成 SVG，base64
@@ -522,8 +560,8 @@ class DomToImage {
     toSvg() {
         return Promise.resolve()
             .then(() => cloneNode(this.options.targetNode, this.options.filter, true))
-            // .then(embedFonts)
-            .then(inlineImages)
+            .then(embedFonts)
+            .then(checkElementStyleBackgroup)
             .then(this.applyOptions.bind(this))
             .then(clone => {
             clone.setAttribute('style', '');
