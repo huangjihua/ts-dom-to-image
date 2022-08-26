@@ -17,7 +17,7 @@ export const embedFonts = (node: HTMLElement) => {
     const newWebFont = (rule: { parentStyleSheet: any; cssText: any; style: { getPropertyValue: (arg0: string) => string; }; }) => {
       const resolve = () => {
         const baseUrl = (rule.parentStyleSheet || {}).href;
-        return newInliner().inlineAll(rule.cssText, baseUrl);
+        return newInliner(rule.cssText, baseUrl);
       }
       const src = () => rule.style.getPropertyValue('src')
       return { resolve, src };
@@ -47,42 +47,24 @@ export const embedFonts = (node: HTMLElement) => {
     return node;
   });
 }
-
-
-
-
-
-
-
 /**
-   * 外联资源转内联
-   */
-function newInliner() {
-  return {
-    inlineAll: inlineAll,
-  };
-
-
-
-  async function inline(str: string, url: string, baseUrl: string) {
-    url = baseUrl ? createLinkUrl(url, baseUrl) : url;
-    let result = ''
-    const imgData: string = await readUrlFileToEncode({ url: url })
-    const base64 = util.dataAsBase64Url(imgData, util.ParsefileType(url));
-    result = str.replace(util.urlAsRegex(url), '$1' + base64 + '$3');
-    return result;
-  }
-
-  function inlineAll(str: string, baseUrl: any) {
-    if (!util.checkStrUrl(str)) return Promise.resolve(str);
-    console.log(str, baseUrl);
-    const urls = util.readUrls(str);
-    let done = Promise.resolve(str);
-    urls.forEach((url: string) => {
-      done = done.then((str: string) => {
-        return inline(str, url, baseUrl);
-      });
+ * 字体Url File转换为Base64
+ * @param str 字符内容
+ * @param baseUrl url
+ * @returns 
+ */
+function newInliner(str: string, baseUrl: string) {
+  if (!util.checkStrUrl(str)) return Promise.resolve(str);
+  // console.log(str, baseUrl);
+  const urls = util.readUrls(str);
+  let done = Promise.resolve(str);
+  urls.forEach((url: string) => {
+    done = done.then(async (str: string) => {
+      url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+      const imgData: string = await readUrlFileToEncode({ url: url })
+      const base64 = util.dataAsBase64Url(imgData, util.ParsefileType(url));
+      return str.replace(util.urlAsRegex(url), '$1' + base64 + '$3');;
     });
-    return done;
-  }
+  });
+  return done;
 }
