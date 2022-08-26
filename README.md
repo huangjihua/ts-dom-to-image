@@ -89,11 +89,11 @@ Impl 下的所有函数都不是公共 API，只是为了单元测试而公开�
  
 | 属性 | 类型 | 默认值 | 说明
 | --- | --- | --- | --- |
-|targetNode| HTMLElement | 生成图片的目标元素 |
+| targetNode| HTMLElement | 生成图片的目标元素 |
 | width | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|
 | height | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|
 | bgcolor | string | -- |设置背景色，CSS 颜色值 |
-| style | object | -- | 样式属性对象 |
+| style | CSSStyleDeclaration | -- | 样式属性对象 |
 | filter | function | -- |一个以 DOM 节点为参数的函数。如果传递的节点应该包含在输出中，那么应该返回 true (排除节点意味着也排除它的子节点)。未在根节点上调用|
 | quality  | number | 1.0 | 一个介于0和1之间的数字，表示 JPEG 图像的图像质量(例如0.92 = > 92%) |
 | imagePlaceholder | string | -- |占位符图像的数据 URL，在获取图像失败时将使用该 URL。默认值为未定义，并将对失败的映像抛出错误|
