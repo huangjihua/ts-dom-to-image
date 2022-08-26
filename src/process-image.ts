@@ -75,10 +75,12 @@ export const checkElementImgToInline = async (node: HTMLElement) => {
     const value = await checkStrUrlFile(background);
     if (value) node.style.setProperty('background', value, node.style.getPropertyPriority('background'));
   }
+  const arr = Array.prototype.slice.call(node.childNodes).filter(child => child.nodeType === 1)
   await Promise.all(
-    util.asArray(node.childNodes).map((child: HTMLElement) => {
+    arr.map((child: HTMLElement) => {
       return checkElementImgToInline(child);
-    }))
+    })
+  )
   return node;
 }
 
