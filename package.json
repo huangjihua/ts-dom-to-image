@@ -1,7 +1,7 @@
 {
   "name": "ts-dom-to-image",
   "version": "1.0.0",
-  "description": "dom to image with typescript",
+  "description": "把指定DOM生成图片的功能",
   "main": "dist/dom-to-image.cjs.js",
   "module": "dist/dom-to-image.esm.js",
   "brower": "dist/dom-to-image.js",
