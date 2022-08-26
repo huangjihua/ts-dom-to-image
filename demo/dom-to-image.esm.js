@@ -36,18 +36,6 @@ const uid = () => {
     return `u0000${fourNumberRandom}${index++}`;
 };
 /**
- * 数组化
- * @param arrayLike
- * @returns array
- */
-const asArray = (arrayLike) => {
-    const array = [];
-    for (const item of arrayLike) {
-        array.push(item);
-    }
-    return array;
-};
-/**
  *  转义 Xhtml
  * @param props String
  * @returns
@@ -215,30 +203,6 @@ const xhr = (props) => {
 };
 
 /**
- * 检测字符内所有的url File,并转成内联的 base64地址
- * @param {string} str
- * @param {string} baseUrl
- * @returns {Promise<string>}
- */
-const checkStrUrlFile = (str, baseUrl) => {
-    if (!checkStrUrl(str))
-        return Promise.resolve(str);
-    console.log(str, baseUrl);
-    const urls = readUrls(str);
-    let done = Promise.resolve(str);
-    urls.forEach((url) => {
-        done = done.then((str) => __awaiter(void 0, void 0, void 0, function* () {
-            url = baseUrl ? createLinkUrl(url, baseUrl) : url;
-            const imgData = yield readUrlFileToEncode({ url: url });
-            const base64 = dataAsBase64Url(imgData, ParsefileType(url));
-            return str.replace(urlAsRegex(url), '$1' + base64 + '$3');
-        }));
-        return done;
-    });
-    return done;
-};
-
-/**
  * 创建image
  * @param url img url base64 or  url
  * @returns {Promise<HTMLImageElement>}
@@ -292,10 +256,10 @@ const readUrlFileToEncode = (props) => xhr(Object.assign(Object.assign({}, props
         encoder.readAsDataURL(request.response);
     } }));
 /**
- *  检测元素的样式内的背景图，并转换为内联的 Base64形式
+ *  检测图片元素和样式内的背景图，并转换为内联的 Base64形式
  * @param node HTMLELment
  */
-const checkElementStyleBackgroup = (node) => __awaiter(void 0, void 0, void 0, function* () {
+const checkElementImgToInline = (node) => __awaiter(void 0, void 0, void 0, function* () {
     if (node instanceof HTMLImageElement)
         return imgSrcToInlineBase64(node);
     if (node.style) {
@@ -306,11 +270,10 @@ const checkElementStyleBackgroup = (node) => __awaiter(void 0, void 0, void 0, f
         if (value)
             node.style.setProperty('background', value, node.style.getPropertyPriority('background'));
     }
-    // node.childNodes.forEach((child: any) => checkElementStyleBackgroup(child as HTMLElement))
-    const result = yield Promise.all(asArray(node.childNodes).filter((child) => child.NodeName != '#text').map((child) => {
-        return checkElementStyleBackgroup(child);
+    const arr = Array.prototype.slice.call(node.childNodes).filter(child => child.nodeType === 1);
+    yield Promise.all(arr.map((child) => {
+        return checkElementImgToInline(child);
     }));
-    console.log(result);
     return node;
 });
 /**
@@ -331,6 +294,29 @@ function imgSrcToInlineBase64(element) {
             element.src = dataUrl;
         });
     });
+}
+/**
+ * 检测字符内所有的url File,并转成内联的 base64地址
+ * @param {string} str
+ * @param {string} baseUrl
+ * @returns {Promise<string>}
+ */
+function checkStrUrlFile(str, baseUrl) {
+    if (!checkStrUrl(str))
+        return Promise.resolve(str);
+    console.log(str, baseUrl);
+    const urls = readUrls(str);
+    let done = Promise.resolve(str);
+    urls.forEach((url) => {
+        done = done.then((str) => __awaiter(this, void 0, void 0, function* () {
+            url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+            const imgData = yield readUrlFileToEncode({ url: url });
+            const base64 = dataAsBase64Url(imgData, ParsefileType(url));
+            return str.replace(urlAsRegex(url), '$1' + base64 + '$3');
+        }));
+        return done;
+    });
+    return done;
 }
 
 /**
@@ -561,7 +547,7 @@ class DomToImage {
         return Promise.resolve()
             .then(() => cloneNode(this.options.targetNode, this.options.filter, true))
             .then(embedFonts)
-            .then(checkElementStyleBackgroup)
+            .then(checkElementImgToInline) // 图片和背景图转内联形式
             .then(this.applyOptions.bind(this))
             .then(clone => {
             clone.setAttribute('style', '');
@@ -609,6 +595,11 @@ class DomToImage {
             return canvas;
         });
     }
+    /**
+     * 传入的样式属性赋值到克隆元素
+     * @param {HTMLElement} clone
+     * @returns
+     */
     applyOptions(clone) {
         if (this.options.bgColor)
             clone.style.backgroundColor = this.options.bgColor;
