@@ -12,11 +12,19 @@
     "publish": "node scripts/publish.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/huangjihua/ts-dom-to-image.git"
+  },
   "keywords": [
     "dom-to-image"
   ],
-  "author": "",
+  "author": "hank.online@foxmail.com",
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/huangjihua/ts-dom-to-image/issues"
+  },
+  "homepage": "https://github.com/huangjihua/ts-dom-to-image#readme",
   "devDependencies": {
     "commander": "^9.4.0",
     "rollup": "^2.78.0",
