@@ -1,7 +1,7 @@
 {
   "name": "ts-dom-to-image",
   "version": "1.0.0",
-  "description": "把指定DOM生成图片的功能",
+  "description": "把指定DOM生成图片",
   "main": "dist/dom-to-image.cjs.js",
   "module": "dist/dom-to-image.esm.js",
   "brower": "dist/dom-to-image.js",
@@ -16,7 +16,7 @@
     "dom-to-image"
   ],
   "author": "",
-  "license": "ISC",
+  "license": "MIT",
   "devDependencies": {
     "commander": "^9.4.0",
     "rollup": "^2.78.0",
