@@ -454,7 +454,7 @@ const embedFonts = (node) => {
         const newWebFont = (rule) => {
             const resolve = () => {
                 const baseUrl = (rule.parentStyleSheet || {}).href;
-                return newInliner().inlineAll(rule.cssText, baseUrl);
+                return newInliner(rule.cssText, baseUrl);
             };
             const src = () => rule.style.getPropertyValue('src');
             return { resolve, src };
@@ -485,35 +485,26 @@ const embedFonts = (node) => {
     });
 };
 /**
-   * 外联资源转内联
-   */
-function newInliner() {
-    return {
-        inlineAll: inlineAll,
-    };
-    function inline(str, url, baseUrl) {
-        return __awaiter(this, void 0, void 0, function* () {
+ * 字体Url File转换为Base64
+ * @param str 字符内容
+ * @param baseUrl url
+ * @returns
+ */
+function newInliner(str, baseUrl) {
+    if (!checkStrUrl(str))
+        return Promise.resolve(str);
+    // console.log(str, baseUrl);
+    const urls = readUrls(str);
+    let done = Promise.resolve(str);
+    urls.forEach((url) => {
+        done = done.then((str) => __awaiter(this, void 0, void 0, function* () {
             url = baseUrl ? createLinkUrl(url, baseUrl) : url;
-            let result = '';
             const imgData = yield readUrlFileToEncode({ url: url });
             const base64 = dataAsBase64Url(imgData, ParsefileType(url));
-            result = str.replace(urlAsRegex(url), '$1' + base64 + '$3');
-            return result;
-        });
-    }
-    function inlineAll(str, baseUrl) {
-        if (!checkStrUrl(str))
-            return Promise.resolve(str);
-        console.log(str, baseUrl);
-        const urls = readUrls(str);
-        let done = Promise.resolve(str);
-        urls.forEach((url) => {
-            done = done.then((str) => {
-                return inline(str, url, baseUrl);
-            });
-        });
-        return done;
-    }
+            return str.replace(urlAsRegex(url), '$1' + base64 + '$3');
+        }));
+    });
+    return done;
 }
 
 /**
