@@ -1,10 +1,13 @@
 {
   "name": "ts-dom-to-image",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "把指定DOM生成图片",
   "main": "dist/dom-to-image.cjs.js",
   "module": "dist/dom-to-image.esm.js",
   "brower": "dist/dom-to-image.js",
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "start": "rollup -c -w",
     "build": "rollup -c && npm run copy",
@@ -35,5 +38,7 @@
     "tslib": "^2.4.0",
     "typescript": "^4.7.4"
   },
-  "dependencies": {}
+  "dependencies": {
+    "ts-dom-to-image": "^1.0.2"
+  }
 }
