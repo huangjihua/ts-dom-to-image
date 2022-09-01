@@ -1,6 +1,6 @@
 import * as util from './utils';
 import { cloneNode } from './cloneNode';
-import { embedFonts } from './embedFonts';
+import { processFonts } from './process-font';
 import { createImage, checkElementImgToInline } from './process-image';
 import { createSvgEncodeUrl } from './createSvg';
 import { FILE_ENUM_TYPE } from './utils/type';
@@ -34,7 +34,7 @@ export default class DomToImage {
   toSvg() {
     return Promise.resolve()
       .then((): any => cloneNode(this.options.targetNode, this.options.filter, true))
-      .then(embedFonts)
+      .then(processFonts)
       .then(checkElementImgToInline) // 图片和背景图转内联形式
       .then(this.applyOptions.bind(this))
       .then(clone => {

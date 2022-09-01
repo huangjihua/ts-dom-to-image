@@ -1,11 +1,12 @@
 import * as util from './utils';
 import { createLinkUrl, readUrlFileToEncode } from "./process-image";
+
 /**
- * 嵌入字体
+ * 处理嵌入字体
  * @param node 
  * @returns 
  */
-export const embedFonts = (node: HTMLElement) => {
+export const processFonts = (node: HTMLElement) => {
   const readAllFont: any = (styleSheets: StyleSheetList) => {
     const cssRules: Array<any> = []
     for (const sheet of styleSheets) {
@@ -47,6 +48,7 @@ export const embedFonts = (node: HTMLElement) => {
     return node;
   });
 }
+
 /**
  * 字体Url File转换为Base64
  * @param str 字符内容
