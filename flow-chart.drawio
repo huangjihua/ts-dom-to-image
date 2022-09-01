@@ -1,6 +1,6 @@
 <mxfile host="65bd71144e">
     <diagram id="GuzQfGuWI9vkjRt0VNdA" name="第 1 页">
-        <mxGraphModel dx="810" dy="463" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
+        <mxGraphModel dx="981" dy="734" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1169" pageHeight="827" background="#FFFFFF" math="0" shadow="0">
             <root>
                 <mxCell id="0"/>
                 <mxCell id="1" parent="0"/>
@@ -14,28 +14,13 @@
                     <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="3" value="递归地克隆原始 DOM节点" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;gradientColor=none;imageAspect=1;" parent="1" vertex="1">
-                    <mxGeometry x="222.5" y="200" width="165" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="23" value="" style="edgeStyle=none;html=1;strokeColor=#999999;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" parent="1" source="5" target="13" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="5" value="计算节点和每个子节点的样式，并复制到对应克隆节点上" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="222.5" y="260" width="165" height="30" as="geometry"/>
+                    <mxGeometry x="220" y="100" width="165" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="12" value="绘制 SVG 到画布" style="rounded=0;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="223.75" y="560" width="165" height="30" as="geometry"/>
-                </mxCell>
-                <mxCell id="26" value="" style="edgeStyle=none;html=1;strokeColor=#999999;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" parent="1" source="13" target="14" edge="1">
-                    <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="13" value="嵌入式网页字体" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;html=1;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="222.5" y="315" width="165" height="30" as="geometry"/>
+                    <mxGeometry x="223.75" y="470" width="165" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="28" value="" style="edgeStyle=none;html=1;strokeColor=#999999;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" parent="1" source="14" target="15" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
-                </mxCell>
-                <mxCell id="14" value="嵌入图像" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;html=1;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="222.5" y="370" width="165" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="29" value="" style="edgeStyle=none;html=1;strokeColor=#999999;shadow=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" parent="1" source="15" target="12" edge="1">
                     <mxGeometry relative="1" as="geometry">
@@ -43,27 +28,42 @@
                     </mxGeometry>
                 </mxCell>
                 <mxCell id="15" value="将克隆节点序列化并转换为 SVG" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;html=1;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="223.75" y="470" width="165" height="30" as="geometry"/>
+                    <mxGeometry x="223.75" y="390" width="165" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="33" value="" style="swimlane;startSize=0;strokeColor=#999999;html=1;dashed=1;shadow=0;" parent="1" vertex="1">
-                    <mxGeometry x="190" y="250" width="520" height="160" as="geometry"/>
+                    <mxGeometry x="200" y="185" width="400" height="160" as="geometry"/>
                 </mxCell>
                 <mxCell id="6" value="资源处理" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="33" vertex="1">
-                    <mxGeometry x="220" y="20" width="270" height="120" as="geometry">
+                    <mxGeometry x="220" y="20" width="160" height="120" as="geometry">
                         <mxRectangle x="402.5" y="260" width="60" height="30" as="alternateBounds"/>
                     </mxGeometry>
                 </mxCell>
-                <mxCell id="7" value="字体资源：embedFonts" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
-                    <mxGeometry y="30" width="270" height="30" as="geometry"/>
+                <mxCell id="7" value="字体：embedFonts" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
+                    <mxGeometry y="30" width="160" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="8" value="图片资源： checkElementImgToInline" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
-                    <mxGeometry y="60" width="270" height="30" as="geometry"/>
+                <mxCell id="8" value="图片：process-image" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
+                    <mxGeometry y="60" width="160" height="30" as="geometry"/>
                 </mxCell>
-                <mxCell id="9" value="样式资源：applyOptions" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
-                    <mxGeometry y="90" width="270" height="30" as="geometry"/>
+                <mxCell id="9" value="样式：process-style" style="text;fillColor=#FFFFFF;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="6" vertex="1">
+                    <mxGeometry y="90" width="160" height="30" as="geometry"/>
                 </mxCell>
                 <mxCell id="37" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;flipH=1;shadow=0;fontFamily=Helvetica;fontSize=12;fontColor=#545454;strokeColor=#999999;fillColor=none;gradientColor=none;" parent="33" vertex="1">
                     <mxGeometry x="200" y="20" width="20" height="120" as="geometry"/>
+                </mxCell>
+                <mxCell id="5" value="计算节点和每个子节点的样式，并复制到对应克隆节点上" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;" parent="33" vertex="1">
+                    <mxGeometry x="20" y="20" width="165" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="13" value="嵌入式网页字体" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;html=1;shadow=0;" parent="33" vertex="1">
+                    <mxGeometry x="22.5" y="75" width="165" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="23" value="" style="edgeStyle=none;html=1;strokeColor=#999999;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" parent="33" source="5" target="13" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="14" value="内联图片" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;html=1;shadow=0;" parent="33" vertex="1">
+                    <mxGeometry x="23.75" y="130" width="165" height="30" as="geometry"/>
+                </mxCell>
+                <mxCell id="26" value="" style="edgeStyle=none;html=1;strokeColor=#999999;entryX=0.5;entryY=0;entryDx=0;entryDy=0;shadow=0;" parent="33" source="13" target="14" edge="1">
+                    <mxGeometry relative="1" as="geometry"/>
                 </mxCell>
                 <mxCell id="42" value="" style="edgeStyle=none;html=1;shadow=0;fontFamily=Helvetica;fontSize=12;fontColor=#545454;strokeColor=#999999;" parent="1" source="38" target="39" edge="1">
                     <mxGeometry relative="1" as="geometry"/>
@@ -76,6 +76,43 @@
                 </mxCell>
                 <mxCell id="41" value="" style="shape=curlyBracket;whiteSpace=wrap;html=1;rounded=1;shadow=0;fontFamily=Helvetica;fontSize=12;fontColor=#545454;strokeColor=#999999;fillColor=none;gradientColor=none;" parent="1" vertex="1">
                     <mxGeometry x="387.5" y="440" width="20" height="90" as="geometry"/>
+                </mxCell>
+                <mxCell id="48" value="" style="edgeStyle=none;html=1;" edge="1" parent="1" source="44">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="718.3333333333333" y="293.33333333333326" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="49" style="edgeStyle=none;html=1;exitX=0.25;exitY=0;exitDx=0;exitDy=0;" edge="1" parent="1" source="44">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="738" y="240" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="53" value="" style="edgeStyle=none;html=1;strokeColor=#B3B3B3;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" edge="1" parent="1" source="44" target="54">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="780" y="360" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="56" value="获取资源文件" style="edgeLabel;html=1;align=center;verticalAlign=middle;resizable=0;points=[];labelBackgroundColor=none;fontColor=#B3B3B3;" vertex="1" connectable="0" parent="53">
+                    <mxGeometry x="-0.0512" y="2" relative="1" as="geometry">
+                        <mxPoint as="offset"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="44" value="XmlHttpRequest" style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;gradientColor=none;imageAspect=1;" vertex="1" parent="1">
+                    <mxGeometry x="750" y="246.25" width="120" height="37.5" as="geometry"/>
+                </mxCell>
+                <mxCell id="46" style="edgeStyle=none;html=1;strokeColor=#B3B3B3;" edge="1" parent="1" source="7">
+                    <mxGeometry relative="1" as="geometry">
+                        <mxPoint x="750" y="250" as="targetPoint"/>
+                    </mxGeometry>
+                </mxCell>
+                <mxCell id="47" style="edgeStyle=none;html=1;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeColor=#B3B3B3;" edge="1" parent="1" source="8" target="44">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="59" style="edgeStyle=none;html=1;fontColor=#B3B3B3;strokeColor=#B3B3B3;" edge="1" parent="1" source="54" target="14">
+                    <mxGeometry relative="1" as="geometry"/>
+                </mxCell>
+                <mxCell id="54" value="通过FileReader里成字符内容 " style="rounded=0;whiteSpace=wrap;fillColor=#FFFFFF;strokeColor=#DEDEDE;fontColor=#545454;shadow=0;gradientColor=none;imageAspect=1;" vertex="1" parent="1">
+                    <mxGeometry x="728.75" y="315" width="162.5" height="30" as="geometry"/>
                 </mxCell>
             </root>
         </mxGraphModel>
