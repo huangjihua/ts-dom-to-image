@@ -2,12 +2,14 @@
 <html>
 	<head>
 		<meta charset="utf-8">
+		<meta name="referrer" content="no-referrer" />
+		<meta http-equiv="Access-Control-Allow-Origin" content="*">
 		<title></title>
-		<script src="./dom-to-image.esm.js" type="module"  ></script>
+		<script src="./dom-to-image.es.js" type="module"  ></script>
 	
 		<style>
 			.c-m-box{
-				width: 400px;
+				width: 600px;
 			}
 			.c-m-img{
 				width: 100px;
@@ -20,8 +22,8 @@
 			    outline-offset: -2px;
 			}
 			.c-m-list{
-				width: 400px;
-				height: 200px;
+				width: 600px;
+				height: 250px;
 				/* background-color: aliceblue; */
 			}
 			.img-list{
@@ -46,10 +48,10 @@
 				font-size:16px;
 			}
       .img2{
-				position: relative;
+		position: relative;
         width: 130px;
         height:130px;
-        background:url(./img/1.jpeg)  center center no-repeat;
+        background:url(https://car3.autoimg.cn/cardfs/motobike/g9/M09/6F/D6/640x480_autohomecar__ChsEhWFj9T6ANDJPAAuHoGjRkto243.jpg.webp)  center center no-repeat;
         background-size: contain;
         border:1px solid blue;
         border-radius: 50%;
@@ -68,6 +70,9 @@
 			 width: 100px;
 			 border:1px solid gray; 
 		 }
+		 .btn-list{
+			 padding-bottom: 10px;
+		 }
 		</style>
 		
 	</head>
@@ -79,7 +84,7 @@
 		        <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
 					<img src="./img/2.png"  alt="" class="c-m-img">
 					<div class="img2"></div>
-					<img style="width:100px;height:100px; border:1px solid pink" src="https://gimg2.baidu.com/image_search/src=http%3A%2F%2Fb-ssl.duitang.com%2Fuploads%2Fitem%2F201809%2F01%2F20180901214613_VXdRf.thumb.700_0.jpeg&refer=http%3A%2F%2Fb-ssl.duitang.com&app=2002&size=f9999,10000&q=a80&n=0&g=0n&fmt=auto?sec=1663756654&t=c9a5a7027110a65b70ea280febb44065" alt="" crossOrigin="anonymous" />
+					<img style="width:200px;height:150px; border:1px solid pink" src="//m1.autoimg.cn/newsdfs/g26/M04/6A/D9/516x264_autohomecar__ChwFkGFmq8OAAmCSAAaQ44fMmNY598.png.webp" alt="" crossOrigin="anonymous" />
 				</div>
 				<input value=""/>
 		        <div class="c-m-title">自动生成 <i class="img-type"></i> 图片...</div>
@@ -93,7 +98,7 @@
 			</div>
 		</div>
   <script type="module">
-    import DomToImage from './dom-to-image.esm.js';
+    import DomToImage from './dom-to-image.es.js';
     console.log(DomToImage)
     var node = document.querySelector('.c-m-list')
     window.domtoimage = new DomToImage({targetNode:node,bgColor:'#fff'});
@@ -102,7 +107,6 @@
   
     //imagePlaceholder:'https://www.pngkey.com/png/detail/233-2332677_image-500580-placeholder-transparent.png'
 		function createImg(type){
-			
 			document.querySelector('.img-type').innerHTML = type.replace('to','')
 			window.domtoimage[type]()
 				.then(function (dataUrl) {
