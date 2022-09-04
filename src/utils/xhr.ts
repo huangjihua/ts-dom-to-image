@@ -30,9 +30,7 @@ export const xhr = (props: {
     request.ontimeout = () => fail(`timeout of ${httpTimeout}ms occured while fetching resource: ${url}`);;
     request.responseType = 'blob';
     request.timeout = httpTimeout;
-    if (useCredentials) {
-      request.withCredentials = true;
-    }
+    if (useCredentials) request.withCredentials = true; // 如果服务端设置了"Access-Control-Allow-Origin": "*"，客户端请求时无需再设置withCredentials: true
     request.open('GET', url, true);
     request.send();
 
