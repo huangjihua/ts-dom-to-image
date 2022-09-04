@@ -3,15 +3,16 @@
   "version": "1.0.3",
   "description": "把指定DOM生成图片",
   "main": "dist/dom-to-image.cjs.js",
-  "module": "dist/dom-to-image.esm.js",
+  "module": "dist/dom-to-image.es.js",
   "brower": "dist/dom-to-image.js",
   "files": [
     "dist"
   ],
   "scripts": {
     "start": "rollup -c -w",
-    "build": "rollup -c && npm run copy",
-    "copy": "cp dist/dom-to-image.esm.js demo && cp package.json dist",
+    "build:dev": "rollup -c && npm run copy ",
+    "build": "rollup -c --environment BUILD:true && npm run copy ",
+    "copy": "cp dist/{*.js,*.map} demo",
     "publish": "node scripts/publish.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -20,6 +21,7 @@
     "url": "git+https://github.com/huangjihua/ts-dom-to-image.git"
   },
   "keywords": [
+    "ts-dom-to-image",
     "dom-to-image"
   ],
   "author": "hank.online@foxmail.com",
@@ -33,6 +35,7 @@
     "rollup": "^2.78.0",
     "rollup-plugin-commonjs": "^10.1.0",
     "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-terser": "^7.0.2",
     "rollup-plugin-typescript": "^1.0.1",
     "shelljs": "^0.8.5",
     "tslib": "^2.4.0",
