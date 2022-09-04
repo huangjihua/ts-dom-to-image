@@ -8,4 +8,5 @@ export enum FILE_ENUM_TYPE {
   JPEG = 'image/jpeg',
   JPG = 'image/jpeg',
   PNG = 'image/png',
+  WEBP = 'image/webp',
 }
