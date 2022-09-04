@@ -2,7 +2,7 @@ const path = require('path');
 const shelljs = require('shelljs');
 const program = require('commander');
 
-const targetFile = path.resolve(__dirname, '../dist/package.json');
+const targetFile = path.resolve(__dirname, '../package.json');
 const packagejson = require(targetFile);
 const currentVersion = packagejson.version;
 const versionArr = currentVersion.split('.');
