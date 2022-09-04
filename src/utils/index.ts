@@ -146,3 +146,71 @@ export const toBlob = (canvas: HTMLCanvasElement) => {
     }));
   });
 }
+
+/**
+ * 生成新的 URL
+ * @param url 
+ * @param baseUrl 
+ * @returns 
+ */
+export const createLinkUrl = (url: string, baseUrl: string): string => {
+  const doc = document.implementation.createHTMLDocument();
+  const base = doc.createElement('base');
+  doc.head.appendChild(base);
+  const a = doc.createElement('a');
+  doc.body.appendChild(a);
+  base.href = baseUrl;
+  a.href = url;
+  console.log(url);
+  return a.href;
+}
+
+/**
+ * 读取Url 文件并转成Base64字符串
+ * @param {Object} props 
+@return {Promise}
+ */
+export const readUrlFileToBase64 = (props: {
+  url: string,
+  httpTimeout?: number,
+  cacheBust?: boolean,
+  useCredentials?: boolean,
+  imagePlaceholder?: string  // base64
+}): Promise<any> => xhr({
+  ...props, successHandle: (request: { response: Blob; }, resolve: (arg0: string | ArrayBuffer | null) => void) => {
+    const reader = new FileReader();
+    // 该事件在读取操作结束时（
+    reader.onloadend = function () {
+      let content = reader.result;
+      // if (content && typeof content === 'string') content = content.split(/,/)[1]
+      resolve(content);
+    };
+    reader.onerror = (err) => {
+      console.error('img url reader fail',err)
+    }
+    // 开始读取指定的Blob中的内容。一旦完成，result属性中将包含一个data: URL 格式的 Base64 字符串以表示所读取文件的内容。
+    reader.readAsDataURL(request.response);
+  }
+})
+
+/**
+ * 检测字符内所有的url File,并转成内联的 base64地址
+ * @param {string} str 
+ * @param {string} baseUrl 
+ * @returns {Promise<string>}
+ */
+export const checkStrUrlFile = (str: string, baseUrl?: string) => {
+  if (!checkStrUrl(str)) return Promise.resolve(str);;
+  console.log(str, baseUrl);
+  const urls =  readUrls(str);
+  let done = Promise.resolve(str);
+  urls.forEach((url: string) => {
+    done = done.then(async str => {
+      url = baseUrl ? createLinkUrl(url, baseUrl) : url;
+      const content: string = await readUrlFileToBase64({ url: url })
+      console.log(content);
+      return str.replace(urlAsRegex(url), '$1' + content + '$3');
+    })
+  })
+  return done;
+}
