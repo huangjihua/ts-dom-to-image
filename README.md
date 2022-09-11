@@ -2,7 +2,7 @@
  <p>
   <a href="https://www.npmjs.com/package/ts-dom-to-image"><img src="https://badgen.net/npm/v/ts-dom-to-image" alt="Version" /></a>
   <a href="https://www.npmjs.com/package/ts-dom-to-image"><img src="https://badgen.net/npm/dm/ts-dom-to-image" alt="Downloads" /></a>
-  <a href="https://github.com/huangjihua/ts-dom-to-image"><img src="https://github.com/huangjihua/ts-dom-to-image/workflows/CI/badge.svg?branch=master&event=push" alt="build status" /></a>
+  <!-- <a href="https://github.com/huangjihua/ts-dom-to-image"><img src="https://github.com/huangjihua/ts-dom-to-image/workflows/CI/badge.svg?branch=master&event=push" alt="build status" /></a> -->
   <a href="https://www.npmjs.com/package/ts-dom-to-image"><img src="https://badgen.net/npm/license/ts-dom-to-image" alt="License" /></a>
 </p>
 ## 简介
