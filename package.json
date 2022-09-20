@@ -1,10 +1,10 @@
 {
   "name": "@hank/ts-dom-to-image",
-  "version": "1.0.5",
+  "version": "1.0.7",
   "description": "把指定DOM生成图片",
-  "main": "dist/dom-to-image.cjs.js",
-  "module": "dist/dom-to-image.es.js",
-  "brower": "dist/dom-to-image.js",
+  "main": "dist/cjs/dom-to-image.js",
+  "module": "dist/es/dom-to-image.js",
+  "brower": "dist/umd/dom-to-image.js",
   "files": [
     "dist"
   ],
@@ -12,7 +12,7 @@
     "start": "rollup -c -w",
     "build:dev": "rollup -c && npm run copy ",
     "build": "rollup -c --environment BUILD:true && npm run copy ",
-    "copy": "cp dist/{*.js,*.map} demo",
+    "copy": "cp -r dist/* demo/js",
     "publish": "node scripts/publish.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -40,5 +40,11 @@
     "shelljs": "^0.8.5",
     "tslib": "^2.4.0",
     "typescript": "^4.7.4"
-  }
+  },
+  "browserslist": [
+    "last 1 version",
+    "> 1%",
+    "maintained node versions",
+    "not dead"
+  ]
 }
