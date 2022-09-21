@@ -5,7 +5,7 @@
 		<meta name="referrer" content="no-referrer" />
 		<meta http-equiv="Access-Control-Allow-Origin" content="*">
 		<title></title>
-		<script src="./dom-to-image.es.js" type="module"  ></script>
+		<script src="./js/es/dom-to-image.js" type="module"  ></script>
 	
 		<style>
 			.c-m-box{
@@ -98,7 +98,7 @@
 			</div>
 		</div>
   <script type="module">
-    import DomToImage from './dom-to-image.es.js';
+    import DomToImage from './js/es/dom-to-image.js';
     console.log(DomToImage)
     var node = document.querySelector('.c-m-list')
     window.domtoimage = new DomToImage({targetNode:node,bgColor:'#fff'});
