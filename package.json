@@ -1,9 +1,9 @@
 {
-  "name": "@hank/ts-dom-to-image",
-  "version": "1.0.7",
+  "name": "ts-dom-to-image",
+  "version": "1.0.14",
   "description": "把指定DOM生成图片",
-  "main": "dist/cjs/dom-to-image.js",
-  "module": "dist/es/dom-to-image.js",
+  "main": "dist/es/dom-to-image.js",
+  "module": "dist/cjs/dom-to-image.js",
   "brower": "dist/umd/dom-to-image.js",
   "files": [
     "dist"
