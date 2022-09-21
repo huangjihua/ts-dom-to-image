@@ -24,12 +24,14 @@ export default [
   // UMD for brower-friendly build
   {
     input: 'src/index.ts', //entry
-    output: {
-      name: 'dom-to-image', //  umd 必填
-      file: pkg.brower, // 终打包出来的文件路径和文件名，这里是在package.json的browser: 'dist/index.js'字段中配置的
-      format: 'umd', // umd是兼容amd/cjs/iife的通用打包格式，适合浏览器
-      sourcemap:true
-    },
+    output: [
+      {
+        name: 'dom-to-image', //  umd 必填
+        file: pkg.brower, // 终打包出来的文件路径和文件名，这里是在package.json的browser: 'dist/index.js'字段中配置的
+        format: 'umd', // umd是兼容amd/cjs/iife的通用打包格式，适合浏览器
+        sourcemap: true,
+      },
+    ],
     plugins: plugins,
   },
   {
@@ -44,8 +46,8 @@ export default [
       }),
     ],
     output: [
-      { file: pkg.main, format: 'cjs', exports: 'auto', sourcemap: true },
-      { file: pkg.module, format: 'es', exports: 'auto', sourcemap: true },
+      { file: pkg.module, format: 'cjs', exports: 'auto', sourcemap: true },
+      { file: pkg.main, format: 'es', exports: 'auto', sourcemap: true },
     ],
   },
 ];
