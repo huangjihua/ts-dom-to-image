@@ -3,6 +3,7 @@ const shelljs = require('shelljs');
 const program = require('commander');
 
 const targetFile = path.resolve(__dirname, '../package.json');
+console.log(targetFile);
 const packagejson = require(targetFile);
 const currentVersion = packagejson.version;
 const versionArr = currentVersion.split('.');
@@ -32,7 +33,6 @@ function publish() {
   shelljs.sed(
     '-i',
     '"name": "ts-dom-to-image"',
-    '"name": "@hank/ts-dom-to-image"',
     targetFile
   );
   shelljs.sed(
@@ -41,7 +41,7 @@ function publish() {
     `"version": "${newVersion}"`,
     targetFile
   );
-  shelljs.cd('dist');
+  // shelljs.cd('./dist');
   shelljs.exec('npm publish');
 }
 
