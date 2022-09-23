@@ -10,16 +10,18 @@ export const setCloneNodeStyleProperty = (sourceNodeCssStyle: CSSStyleDeclaratio
     cloneNodeCssStyle.cssText = sourceNodeCssStyle.cssText
     // TODO safari 解析Style兼容问题,100% auto 形式会自动省略 auto，这样会导致生成的背景图图高度会被默认为 100%，结果就是被拉伸了
     if (sourceNodeCssStyle.getPropertyValue('-webkit-background-size') === '100%' && util.checkBrowse().isSafari) {
-      cloneNodeCssStyle.cssText = cloneNodeCssStyle.cssText.replace('-webkit-background-size: 100%;', '-webkit-background-size: 100% auto')
+      cloneNodeCssStyle.removeProperty('-webkit-background-size')
+      cloneNodeCssStyle.cssText = cloneNodeCssStyle.cssText 
     }
   } else {
     for (const key of sourceNodeCssStyle) {
       if (sourceNodeCssStyle.getPropertyValue(key)) {
         console.log(key, sourceNodeCssStyle.getPropertyValue(key), sourceNodeCssStyle.getPropertyPriority(key))
-        cloneNodeCssStyle.setProperty(key,
-          sourceNodeCssStyle.getPropertyValue(key),
-          sourceNodeCssStyle.getPropertyPriority(key)
-        );
+        if (key!=='-webkit-background-size')
+          cloneNodeCssStyle.setProperty(key,
+            sourceNodeCssStyle.getPropertyValue(key),
+            sourceNodeCssStyle.getPropertyPriority(key)
+          );
       }
     }
   }
