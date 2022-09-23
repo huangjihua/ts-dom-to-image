@@ -1,6 +1,6 @@
 {
   "name": "ts-dom-to-image",
-  "version": "1.0.15",
+  "version": "1.0.17",
   "description": "把指定DOM生成图片",
   "main": "dist/es/dom-to-image.js",
   "module": "dist/cjs/dom-to-image.js",
