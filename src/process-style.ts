@@ -8,9 +8,14 @@ import { formCloneElementValue,fixSvg} from './cloneNode'
 export const setCloneNodeStyleProperty = (sourceNodeCssStyle: CSSStyleDeclaration, cloneNodeCssStyle: CSSStyleDeclaration) => {
   if (sourceNodeCssStyle.cssText) {
     cloneNodeCssStyle.cssText = sourceNodeCssStyle.cssText
+    // TODO safari 解析Style兼容问题,100% auto 形式会自动省略 auto，这样会导致生成的背景图图高度会被默认为 100%，结果就是被拉伸了
+    if (sourceNodeCssStyle.getPropertyValue('-webkit-background-size') === '100%' && util.checkBrowse().isSafari) {
+      cloneNodeCssStyle.cssText = cloneNodeCssStyle.cssText.replace('-webkit-background-size: 100%;', '-webkit-background-size: 100% auto')
+    }
   } else {
     for (const key of sourceNodeCssStyle) {
       if (sourceNodeCssStyle.getPropertyValue(key)) {
+        console.log(key, sourceNodeCssStyle.getPropertyValue(key), sourceNodeCssStyle.getPropertyPriority(key))
         cloneNodeCssStyle.setProperty(key,
           sourceNodeCssStyle.getPropertyValue(key),
           sourceNodeCssStyle.getPropertyPriority(key)
@@ -26,11 +31,11 @@ export const setCloneNodeStyleProperty = (sourceNodeCssStyle: CSSStyleDeclaratio
  * @param node HTMLELment
  */
 export const checkElementImgToInline = async (node: HTMLElement) => {
- 
   if (node.style) {
     const background = node.style.getPropertyValue('background');
     if (!background) return node;
     const value = await util.checkStrUrlFile(background);
+    console.log("background:", value);
     if (value) node.style.setProperty('background', value, node.style.getPropertyPriority('background'));
   }
   const arr = Array.prototype.slice.call(node.childNodes).filter(child => child.nodeType === 1)
@@ -57,6 +62,7 @@ export const processNodePseudoStyle = (original: HTMLElement, clone: HTMLElement
    */
   function nodePseudoStyle(pseudoName: string) {
     const style = window.getComputedStyle(original, pseudoName);
+
     const content = style.getPropertyValue('content');
     if (content === '' || content === 'none') return;
     const className = util.uid();

@@ -2,6 +2,13 @@
 import { xhr } from './xhr';
 import { FILE_ENUM_TYPE } from "./type";
 
+export const checkBrowse = () => {
+  const ua = navigator.userAgent
+  return {
+    isSafari: /Safari/.test(navigator.userAgent) && !/Chrome/.test(ua),
+    isIos:/(iPhone|iPad|iPod|iOS)/i.test(ua)
+  }
+}
 export const URL_REGEX = /url\(['"]?([^'"]+?)['"]?\)/g;
 /**
  * 转义字符串(针对特定符号)
@@ -208,7 +215,7 @@ export const checkStrUrlFile = (str: string, baseUrl?: string) => {
     done = done.then(async str => {
       url = baseUrl ? createLinkUrl(url, baseUrl) : url;
       const content: string = await readUrlFileToBase64({ url: url })
-      console.log(content);
+      // console.log(content);
       return str.replace(urlAsRegex(url), '$1' + content + '$3');
     })
   })
