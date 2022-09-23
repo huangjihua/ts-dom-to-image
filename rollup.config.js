@@ -38,8 +38,8 @@ export default [
     input: 'src/index.ts',
     external: ['ms'],
     plugins: [
-      typescript(),
-      terser({
+     typescript(),
+     production && terser({
         compress: {
           pure_funcs: ['console.log', 'alert'], // 去掉console.log函数
         },
