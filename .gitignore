@@ -2,3 +2,4 @@ node_modules
 dist
 demo/.DS_Store
 demo/js
+coverage

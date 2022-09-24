@@ -1,0 +1,27 @@
+{
+  "root": true,
+  "parser": "@typescript-eslint/parser",
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "jest": true
+  },
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parserOptions": {
+    "parser": "@babel/eslint-parser", // 解析器
+    "ecmaVersion":"latest",
+    "sourceType": "module"
+  },
+  "plugins": ["prettier"],
+  "rules": {
+    "@typescript-eslint/ban-types": 0,
+    // "space-before-function-paren": ["error", "never"],// 与prettier 冲突
+    "no-useless-escape":0,
+    "@typescript-eslint/no-explicit-any": 0,
+    "semi": 0, // 结尾不要分号
+    "no-var":0,
+    "prettier/prettier": 0 // Runs Prettier as an ESLint rule and reports differences
+  }
+}
