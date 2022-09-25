@@ -46,7 +46,7 @@ async function imgSrcToInlineBase64(element: HTMLImageElement): Promise<any> {
     return new Promise(function (resolve, reject) {
       element.onload = resolve
       element.onerror = reject
-      element.src = base64
+      element.src = base64 as string
     })
   }
 }
