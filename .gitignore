@@ -3,3 +3,4 @@ dist
 demo/.DS_Store
 demo/js
 coverage
+.eslintcache

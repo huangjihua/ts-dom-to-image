@@ -4,15 +4,14 @@
   "description": "把指定DOM生成图片",
   "main": "dist/umd/dom-to-image.min.js",
   "module": "dist/es/dom-to-image.js",
+  "unpkg": "dist/umd/dom-to-image.min.js",
+  "jsdelivr": "dist/umd/dom-to-image.min.js",
   "files": [
     "dist"
   ],
-  "type": "commonjs",
   "scripts": {
     "dev": "rollup -w --environment NODE_ENV:development -c scripts/rollup.config.dev.js",
     "build": "rollup --environment NODE_ENV:production -c scripts/rollup.config.prod.js",
-    "copy": "cp -r dist/* demo/js",
-    "publish": "node scripts/publish.js",
     "test": "jest",
     "test:c": "jest --coverage",
     "lint": "eslint . --ext .ts",
@@ -20,10 +19,19 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "cm": "git-cz",
-    "commitlint": "commitlint --config commitlint.config.js -e -V"
+    "commitlint": "commitlint --config commitlint.config.js -e -V",
+    "major": "npm version major -m 'build: update major'",
+    "minor": "npm version minor -m 'build: update minor'",
+    "patch": "npm version patch -m 'build: update patch'",
+    "publish": "npm run build && npm publish --access=public",
+    "pub:major": "npm run major && npm publish --access=public",
+    "pub:minor": "npm run minor && npm publish --access=public",
+    "pub:patch": "npm run patch && npm publish --access=public"
   },
   "jest": {
-    "preset": "rollup-jest"
+    "verbose": true,
+    "preset": "rollup-jest",
+    "testEnvironment": "jest-environment-jsdom"
   },
   "lint-staged": {
     "src/*.ts": [
@@ -57,6 +65,7 @@
     "@commitlint/config-conventional": "^17.1.0",
     "@rollup/plugin-babel": "^5.3.1",
     "@rollup/plugin-eslint": "^8.0.2",
+    "@testing-library/jest-dom": "^5.16.5",
     "@typescript-eslint/eslint-plugin": "^5.38.0",
     "@typescript-eslint/parser": "^5.38.0",
     "commander": "^9.4.0",
@@ -67,6 +76,8 @@
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.0",
     "jest": "^29.0.3",
+    "jest-axe": "^6.0.0",
+    "jest-environment-jsdom": "^29.0.3",
     "lint-staged": "^12.4.0",
     "prettier": "^2.7.1",
     "rollup": "^2.78.0",
