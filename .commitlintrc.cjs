@@ -16,6 +16,7 @@ module.exports = {
         'chore', // 不修改src或测试文件的其他更改
         'revert', //撤退之前的commit
         'build', //构建过程或辅助工具的变动（webpack等)
+        'ci', //  更改持续集成软件的配置文件和package中的scripts命令，例如scopes: Travis, Circle等
       ],
     ],
     'type-case': [0],
