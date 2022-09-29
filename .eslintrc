@@ -4,7 +4,7 @@
   "env": {
     "browser": true,
     "es2021": true,
-    "jest": true
+    "node": true
   },
   "extends": [
     "eslint:recommended"
@@ -19,6 +19,7 @@
     "@typescript-eslint/ban-types": 0,
     // "space-before-function-paren": ["error", "never"],// 与prettier 冲突
     "no-useless-escape":0,
+    "no-unused-vars":0,
     "@typescript-eslint/no-explicit-any": 0,
     "semi": 0, // 结尾不要分号
     "no-var":0,

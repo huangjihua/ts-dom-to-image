@@ -8,8 +8,15 @@
 ts-dom-to-image 是一个用 typeScript 编写的库，它可以将任意的 DOM 节点转换为矢量(SVG)或栅格(PNG 或 JPEG)图像。它基于 Paul Bakaus 的 [domvas](https://github.com/pbakaus/domvas)，已经被完全重写，修复了一些 bug，增加了一些新功能(比如 Web 字体和图像支持)。
 
 # 安装
-**NPM**
-> npm install ts-dom-to-image
+**可选用NPM、YARN、PNPM其中一项来安装**
+```bash
+  npm install ts-dom-to-image
+  
+  yarn add ts-dom-to-image
+  
+  pnpm install ts-dom-to-image
+```
+ 
 
 > 提供输出umd,cjs,es 3种形式的包
 
@@ -19,11 +26,17 @@ import domtoimage from 'ts-dom-to-image';
 /* in ES 5 */
 var domtoimage = require('ts-dom-to-image');
 ```
+**公用CDN**
+> https://unpkg.com/ts-dom-to-image@1.0.18/dist/umd/dom-to-image.min.js
+
+**jsdelivr CND** 
+> https://cdn.jsdelivr.net/npm/ts-dom-to-image@1.0.18/dist/umd/dom-to-image.min.js
+
 
 **Bower**
 > bower install dom-to-image
 
-在页面中包含 src/dom-to-image. js 或 dist/dom-to-image.min.js，它将使 实例化DomToImage类，通过实例化对象即可调用相关函数。
+在页面中包含 src/dom-to-image. js 或 dist/umd/dom-to-image.min.js，它将使 实例化DomToImage类，通过实例化对象即可调用相关函数。
 
 ```html
 <script src="path/to/dom-to-image.min.js" />
