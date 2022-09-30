@@ -2,7 +2,8 @@ import fs from 'fs/promises'
 import inquirer from 'inquirer'
 import shelljs from 'shelljs'
 import semver from 'semver'
-import sgit from 'simple-git'
+import simpleGit from 'simple-git'
+import chalk from 'chalk' // 美化控制台输出
 
 const { version } = JSON.parse(
   await fs.readFile(new URL('../package.json', import.meta.url)),
@@ -37,7 +38,7 @@ inquirer
   .then((res) => {
     const { version: newVer } = res
     // console.log('result:', newVer)
-    publish(newVer)
+    // publish(newVer)
   })
 
 function publish(newVer) {
@@ -50,7 +51,7 @@ function publish(newVer) {
 
   // 提交发布代码
   shelljs.exec('git add . -A')
-  shelljs.which('yarn commit')
+  shelljs.exec('yarn commit')
   shelljs.exec(`git tag -a v${newVer} -m "build: ${newVer}"`)
   shelljs.exec('git push')
   shelljs.exec('git push --tags')

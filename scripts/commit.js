@@ -1,4 +1,5 @@
 import simpleGit from 'simple-git'
+import shelljs from 'shelljs'
 
 const defaultOption = {
   base: process.cwd(),
@@ -10,11 +11,12 @@ const defaultOption = {
 const git = simpleGit(defaultOption)
 await git.init()
 const status = await git.status()
-console.log(status)
 // 当前不为master分支，才提交推送
 if (status.current !== 'master') {
-  console.log(status.current)
+  shelljs.echo('Error:请在 master 分支上发布')
+  shelljs.exit(1)
 }
-
-// staged.length>0 需要要 commit
-// not_added.length>0 => git add .
+if (status.files.length > 0) {
+  shelljs.echo('Error:有未提交文件！')
+  shelljs.exit(1)
+}
