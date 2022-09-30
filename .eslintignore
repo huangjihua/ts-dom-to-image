@@ -1,0 +1,6 @@
+dist
+node_module
+__test__
+demo
+scripts
+coverage
