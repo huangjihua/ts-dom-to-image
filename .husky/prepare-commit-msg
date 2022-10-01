@@ -1,4 +1,4 @@
 #!/usr/bin/env sh
 . "$(dirname -- "$0")/_/husky.sh"
-
+# 限制了每一次 git commit 都触发
 exec < /dev/tty && node_modules/.bin/cz --hook || true
