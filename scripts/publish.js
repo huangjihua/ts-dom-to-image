@@ -1,10 +1,10 @@
-import fs from 'fs/promises'
+// import fs from 'fs/promises'
 import inquirer from 'inquirer'
 import shelljs from 'shelljs'
 import semver from 'semver'
 import simpleGit from 'simple-git'
-import chalk from 'chalk' // 美化控制台输出
-
+// import chalk from 'chalk' // 美化控制台输出
+import child_process from 'child_process'
 const { version } = JSON.parse(
   await fs.readFile(new URL('../package.json', import.meta.url)),
 )
@@ -35,18 +35,19 @@ inquirer
       ],
     },
   ])
-  .then((res) => {
+  .then(async (res) => {
     const { version: newVer } = res
     // console.log('result:', newVer)
     // publish(newVer)
+    console.log(child_process)
+    await child_process.exec('yarn commit')
   })
 
 function publish(newVer) {
   // 拉取最新版本
   // shelljs.exec('git pull')
   // 运行测试
-  // shelljs.exec('npm run test')
-  //通过yarn version更新版本号，但不自动添加git tag，而是在构建完成后由cli工具添加
+  // shelljs.exec('npm run test') //通过yarn version更新版本号，但不自动添加git tag，而是在构建完成后由cli工具添加
   shelljs.exec(`npm version ${newVer} --no-git-tag-version`)
 
   // 提交发布代码
@@ -54,6 +55,7 @@ function publish(newVer) {
   shelljs.exec('yarn commit')
   shelljs.exec(`git tag -a v${newVer} -m "build: ${newVer}"`)
   shelljs.exec('git push')
+ 
   shelljs.exec('git push --tags')
   // 构建
   // shelljs.exec('npm run build')
