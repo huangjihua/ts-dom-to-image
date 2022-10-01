@@ -11,17 +11,17 @@ async function publish(newVer) {
   shelljs.exec(`npm version ${newVer} --no-git-tag-version`)
   await checkBranch() // 发布前确认是否为master分支，并检查是否有未提交文件
   const newVersion = await versionFn()
-  console.log(newVersion)
+
   // 提交发布代码
   // shelljs.exec('git add . -A')
   // shelljs.exec('yarn commit')
-  // shelljs.exec(`git tag -a v${newVersion} -m "build: ${newVersion}"`)
-  // shelljs.exec('git push')
+  shelljs.exec(`git tag -a v${newVersion} -m "build: ${newVersion}"`)
+  shelljs.exec('git push')
 
-  // shelljs.exec('git push --tags')
+  shelljs.exec('git push --tags')
   // 构建
-  // shelljs.exec('npm run build')
-  //发布
-  // shelljs.exec('npm run publish --access=public')
+  shelljs.exec('npm run build')
+  // 发布
+  shelljs.exec('npm run publish --access=public')
 }
 publish()
