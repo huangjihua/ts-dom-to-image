@@ -1,7 +1,8 @@
 {
   "presets": [
     ["@babel/preset-env", {
-      "modules": "auto",  //"amd" | "umd" | "systemjs" | "commonjs" | "cjs" | "auto" | false, defaults to "auto"
+      // rollupjs 会处理模块，所以设置成 false
+      "modules": false, // jest 
       "targets":{
         "node":"current"
       }
