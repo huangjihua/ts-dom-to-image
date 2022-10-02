@@ -1,48 +1,27 @@
-const path = require('path');
-const shelljs = require('shelljs');
-const program = require('commander');
+const shelljs = require('shelljs')
+const chalk = require('chalk') // 美化控制台输出
+const checkBranch = require('./check')
+const versionFn = require('./publish.version')
 
-const targetFile = path.resolve(__dirname, '../package.json');
-console.log(targetFile);
-const packagejson = require(targetFile);
-const currentVersion = packagejson.version;
-const versionArr = currentVersion.split('.');
-const [mainVersion, subVersion, phaseVersion] = versionArr;
+async function publish(newVer) {
+  // 拉取最新版本
+  shelljs.exec('git pull')
+  // 运行测试
+  shelljs.exec('npm run test:c') //通过yarn version更新版本号，但不自动添加git tag，而是在构建完成后由cli工具添加
+  shelljs.exec(`npm version ${newVer} --no-git-tag-version`)
+  await checkBranch() // 发布前确认是否为master分支，并检查是否有未提交文件
+  const newVersion = await versionFn()
+  console.log(newVersion)
+  // 提交发布代码
+  // shelljs.exec('git add . -A')
+  // shelljs.exec('yarn commit')
+  // shelljs.exec(`git tag -a v${newVersion} -m "build: ${newVersion}"`)
+  // shelljs.exec('git push')
 
-// 默认版本号
-const defaultVersion = `${mainVersion}.${subVersion}.${+phaseVersion + 1}`;
-
-let newVersion = defaultVersion;
-
-// 从命令行参数中取版本号
-program.option(
-  '-v, --versions <type>',
-  'Add release version number',
-  defaultVersion
-);
-
-program.parse(process.argv);
-
-if (program.versions) {
-  newVersion = program.versions;
+  // shelljs.exec('git push --tags')
+  // 构建
+  // shelljs.exec('npm run build')
+  //发布
+  // shelljs.exec('npm run publish --access=public')
 }
-
-console.log('newVersion:', newVersion);
-
-function publish() {
-  shelljs.sed(
-    '-i',
-    '"name": "ts-dom-to-image"',
-    targetFile
-  );
-  shelljs.sed(
-    '-i',
-    `"version": "${currentVersion}"`,
-    `"version": "${newVersion}"`,
-    targetFile
-  );
-  // shelljs.cd('./dist');
-  shelljs.exec('npm publish');
-}
-
-publish();
+publish()
