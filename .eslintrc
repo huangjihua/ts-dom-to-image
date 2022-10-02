@@ -14,7 +14,7 @@
     "ecmaVersion":"latest",
     "sourceType": "module"
   },
-  "plugins": ["prettier"],
+  "plugins": ["@typescript-eslint","prettier"],
   "rules": {
     "@typescript-eslint/ban-types": 0,
     // "space-before-function-paren": ["error", "never"],// 与prettier 冲突

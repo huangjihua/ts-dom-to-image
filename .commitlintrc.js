@@ -19,10 +19,14 @@ module.exports = {
         'ci', //  更改持续集成软件的配置文件和package中的scripts命令，例如scopes: Travis, Circle等
       ],
     ],
+    'scope-case': [
+      2,
+      'always',
+      ['module', 'utils', 'config', 'test', 'demo', 'empty', 'custom'],
+    ],
     'type-case': [0],
     'type-empty': [0],
     'scope-empty': [0],
-    'scope-case': [0],
     'subject-full-stop': [0, 'never'],
     'subject-case': [0, 'never'],
     'header-max-length': [0, 'always', 72],
