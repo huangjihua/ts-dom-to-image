@@ -1,0 +1,22 @@
+{
+  "name": "ts-dom-to-image",
+  "description": "把指定DOM生成图片",
+  "main": "dist/umd/dom-to-image.min.js",
+  "authors": [
+    "hank.online@foxmail.com"
+  ],
+  "license": "MIT",
+  "keywords": [
+    "ts-dom-to-image",
+    "dom-to-image"
+  ],
+  "homepage": "https://github.com/huangjihua/ts-dom-to-image",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}

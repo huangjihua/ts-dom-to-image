@@ -1,8 +1,5 @@
-import '@testing-library/jest-dom'
-import '@testing-library/jest-dom/extend-expect'
-import 'jest-axe/extend-expect'
-
-// import DomToImage from '../src/index' //TODO jest 针对es6 import的支持问题
+import DomToImage from '../src/index' //TODO jest 针对es6 import的支持问题
+import createImg from './create-image'
 
 function demoDOM() {
   const style = document.createElement('style')
@@ -49,7 +46,7 @@ function demoDOM() {
       </div>
     </div>`
   const node = document.querySelector('.c-m-list')
-  const DomToImage = require('../dist/es/dom-to-image')
+  // const DomToImage = require('../dist/es/dom-to-image')
   // window.getComputedStyle = (elt, pseudoElt) => {
   //   window.getComputedStyle(elt)
   // } //  RangeError: Maximum call stack size exceeded
@@ -58,7 +55,7 @@ function demoDOM() {
     bgColor: '#fff',
     scale: window.devicePixelRatio,
   })
-  const createImg = require('./create-image')
+  // const createImg = require('./create-image')
   const btn_svg = document.querySelector('.button-svg')
   btn_svg.addEventListener('click', () => {
     createImg(dti, 'toSvg')
