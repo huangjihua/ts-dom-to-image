@@ -19,7 +19,7 @@
     "lint-staged": "lint-staged",
     "prepare": "husky install",
     "commit": "git-cz",
-    "commitlint": "commitlint --config .commitlintrc.js -e -V",
+    "commitlint": "commitlint --config ./.commitlintrc.js -e -V",
     "changelog": "conventional-changelog -p angular -i CHANGELOG.md -s",
     "pub": "node ./scripts/publish.js"
   },
