@@ -4,8 +4,9 @@
   <a href="https://www.npmjs.com/package/ts-dom-to-image"><img src="https://badgen.net/npm/dm/ts-dom-to-image" alt="Downloads" /></a>
   <a href="https://www.npmjs.com/package/ts-dom-to-image"><img src="https://badgen.net/npm/license/ts-dom-to-image" alt="License" /></a>
 </p>
+
 ## 简介
-ts-dom-to-image 是一个用 typeScript 编写的库，它可以将任意的 DOM 节点转换为矢量(SVG)或栅格(PNG 或 JPEG)图像。它基于 Paul Bakaus 的 [domvas](https://github.com/pbakaus/domvas)，已经被完全重写，修复了一些 bug，增加了一些新功能(比如 Web 字体和图像支持)。
+ts-dom-to-image 是一个用 TypeScript 编写的库，它可以将任意的 DOM 节点转换为矢量(SVG)或栅格(PNG 或 JPEG)图像。它基于 Paul Bakaus 的 [domvas](https://github.com/pbakaus/domvas)，已经被完全重写，修复了一些 bug，增加了一些新功能(比如 Web 字体和图像支持)。
 
 # 安装
 **可选用NPM、YARN、PNPM其中一项来安装**
