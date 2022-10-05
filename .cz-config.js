@@ -25,8 +25,6 @@ module.exports = {
     { name: 'build' },
     { name: 'test' },
     { name: 'demo' },
-    // { name: 'custom' },
-    // { name:'empty' },
   ],
   // 消息步骤
   messages: {
