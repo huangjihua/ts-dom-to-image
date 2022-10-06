@@ -33,20 +33,9 @@ function readAllFont(styleSheets: StyleSheetList) {
     for (const cssRule of sheet.cssRules) {
       if (cssRule.type === 5) {
         cssRules.push(cssRule)
-        // break;
       }
     }
   }
-  //  const selectWebFontRules =(cssRules)=> {
-  //   return cssRules
-  //     .filter(function (rule) {
-  //       return rule.type === CSSRule.FONT_FACE_RULE;
-  //     })
-  //     .filter(function (rule) {
-  //       return inliner.shouldProcess(rule.style.getPropertyValue('src'));
-  //     });
-  // }
-
   const newWebFont = (rule: {
     parentStyleSheet: StyleSheet
     cssText: string
