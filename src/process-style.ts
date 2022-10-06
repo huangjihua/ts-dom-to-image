@@ -18,16 +18,15 @@ export const setCloneNodeStyleProperty = (
       util.checkBrowse().isSafari
     ) {
       cloneNodeCssStyle.removeProperty('-webkit-background-size')
-      // cloneNodeCssStyle.cssText = cloneNodeCssStyle.cssText
     }
   } else {
     for (const key of sourceNodeCssStyle) {
       if (sourceNodeCssStyle.getPropertyValue(key)) {
-        console.log(
-          key,
-          sourceNodeCssStyle.getPropertyValue(key),
-          sourceNodeCssStyle.getPropertyPriority(key),
-        )
+        // console.log(
+        //   key,
+        //   sourceNodeCssStyle.getPropertyValue(key),
+        //   sourceNodeCssStyle.getPropertyPriority(key),
+        // )
         if (key !== '-webkit-background-size')
           cloneNodeCssStyle.setProperty(
             key,
