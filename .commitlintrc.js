@@ -19,11 +19,11 @@ module.exports = {
         'ci', //  更改持续集成软件的配置文件和package中的scripts命令，例如scopes: Travis, Circle等
       ],
     ],
-    // 'scope-enum': [
-    //   2,
-    //   'always',
-    //   ['module', 'utils', 'config', 'test', 'demo', 'empty', 'custom'],
-    // ],
+    'scope-enum': [
+      2,
+      'always',
+      ['module', 'utils', 'config', 'test', 'demo', 'empty', 'custom'],
+    ],
     'scope-case': [0],
     'type-case': [0],
     'type-empty': [0],
