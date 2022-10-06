@@ -14,6 +14,7 @@ export const processFonts = (node: HTMLElement) => {
 
   return cssText.then((cssText: string) => {
     const styleNode = document.createElement('style')
+    console.log(cssText)
     node.appendChild(styleNode)
     styleNode.appendChild(document.createTextNode(cssText))
     return node
@@ -30,9 +31,22 @@ function readAllFont(styleSheets: StyleSheetList) {
   const cssRules: Array<any> = []
   for (const sheet of styleSheets) {
     for (const cssRule of sheet.cssRules) {
-      cssRules.push.bind(cssRule, sheet.cssRules)
+      if (cssRule.type === 5) {
+        cssRules.push(cssRule)
+        // break;
+      }
     }
   }
+  //  const selectWebFontRules =(cssRules)=> {
+  //   return cssRules
+  //     .filter(function (rule) {
+  //       return rule.type === CSSRule.FONT_FACE_RULE;
+  //     })
+  //     .filter(function (rule) {
+  //       return inliner.shouldProcess(rule.style.getPropertyValue('src'));
+  //     });
+  // }
+
   const newWebFont = (rule: {
     parentStyleSheet: StyleSheet
     cssText: string
@@ -51,6 +65,7 @@ function readAllFont(styleSheets: StyleSheetList) {
   try {
     for (const rule of cssRules) {
       if (rule.type === CSSRule.FONT_FACE_RULE) {
+        console.log(rule)
         newFonts.push(newWebFont(rule))
       } else if (util.checkStrUrl(rule.style.getPropertyValue('src'))) {
         newFonts.push(newWebFont(rule))
