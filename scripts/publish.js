@@ -30,8 +30,8 @@ async function publish() {
   // 提交发布代码
   await git.add('./*')
 
-  // execSyncCmd('npm run commit')
-  await git.commit(`build: ${newVersion}`)
+  execSyncCmd('npm run commit')
+  // await git.commit()
   await git.tag(`-a v${newVersion} -m "build: ${newVersion}"`)
   await git.push()
   await git.push(['--tags'])
@@ -51,7 +51,7 @@ async function publish() {
  */
 function execSyncCmd(cmd) {
   const res = child_process.execSync(cmd, { stdio: 'inherit' })
-  console.log(res)
+  console.log('cmd:', res)
 }
 
 /**
