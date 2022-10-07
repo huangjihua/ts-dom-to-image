@@ -29,20 +29,14 @@ async function publish() {
 
   // 提交发布代码
   await git.add('./*')
-
   execSyncCmd('npm run commit')
-  // await git.commit()
-  await git.tag(`-a v${newVersion} -m "build: ${newVersion}"`)
+  await git.tag([`v${newVersion}`])
   await git.push()
   await git.push(['--tags'])
-  // shelljs.exec(`git tag -a v${newVersion} -m "build: ${newVersion}"`)
-  // shelljs.exec('git push')
-
-  // shelljs.exec('git push --tags')
   // 构建
   shelljs.exec('npm run build')
   // 发布
-  shelljs.exec('npm run publish --access=public')
+  shelljs.exec('npm run publish')
 }
 /**
  * 同步执行bash命令
@@ -50,8 +44,13 @@ async function publish() {
  * @param {*} cmd
  */
 function execSyncCmd(cmd) {
-  const res = child_process.execSync(cmd, { stdio: 'inherit' })
-  console.log('cmd:', res)
+  try {
+    const res = child_process.execSync(cmd, { stdio: 'inherit' })
+    console.log('cmd:', res)
+  } catch (error) {
+    spinner.fail(chalk`{red error：}{blue execSync action ！}${error}`)
+    shelljs.exit(1)
+  }
 }
 
 /**
