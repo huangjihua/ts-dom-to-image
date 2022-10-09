@@ -28,7 +28,7 @@
       height: 100px;
       border-radius: 50%;
       border: solid 1px gray;
-      box-shadow: 5px 5px 5px blue;
+      box-shadow: 5px 8px 5px black;
       filter: 0.5;
     }
 
@@ -84,6 +84,7 @@
       background-size: contain;
       border: 1px solid blue;
       border-radius: 50%;
+      zoom: 1.2
     }
 
     .img2::before {
@@ -93,6 +94,20 @@
       height: 100%;
       background-color: red;
       z-index: -1;
+    }
+
+    .img3 {
+      /* display: flex;
+      justify-content: center;
+      align-items: center; */
+      width: 160px;
+      height: 160px;
+    }
+
+    .img3>img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
     }
 
     input {
@@ -139,11 +154,13 @@
     <div class="c-m-list">
       <div class="img-list">
         <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
-        <img src="./img/2.png" alt="" class="c-m-img">
+        <img src="./img/moto.png" alt="" class="c-m-img">
         <div class="img2"></div>
-        <img style="width:200px;height:150px; border:1px solid pink"
-          src="//m1.autoimg.cn/newsdfs/g26/M04/6A/D9/516x264_autohomecar__ChwFkGFmq8OAAmCSAAaQ44fMmNY598.png.webp"
-          alt="" crossOrigin="anonymous" />
+        <div class="img3">
+          <img style="border:1px solid pink"
+            src="//m1.autoimg.cn/newsdfs/g26/M04/6A/D9/516x264_autohomecar__ChwFkGFmq8OAAmCSAAaQ44fMmNY598.png.webp"
+            alt="" crossOrigin="anonymous" />
+        </div>
       </div>
       <input value="" />
       <div class="flex-b">
