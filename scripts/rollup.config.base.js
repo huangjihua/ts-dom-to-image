@@ -8,6 +8,7 @@ import clear from 'rollup-plugin-clear'
 import pkg from '../package.json'
 
 const pkgName = 'dom-to-image'
+const _name = 'DomToImage'
 // 打包处理的问题，添加备注信息
 const banner =
   '/*!\n' +
@@ -22,13 +23,13 @@ export default // UMD for brower-friendly build
   input: 'src/index.ts', //entry
   output: [
     {
-      name: pkgName, //  umd 必填
+      name: _name, //  umd 必填
       file: `dist/umd/${pkgName}.js`, // 终打包出来的文件路径和文件名，这里是在package.json的browser: 'dist/index.js'字段中配置的
       format: 'umd', // umd是兼容amd/cjs/iife的通用打包格式，适合浏览器
       banner,
     },
     {
-      name: pkgName, //  umd 必填
+      name: _name,
       file: `dist/umd/${pkgName}.min.js`,
       format: 'umd',
       banner,
