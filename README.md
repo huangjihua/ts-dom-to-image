@@ -6,7 +6,7 @@
 </p>
 
 ## 简介
-ts-dom-to-image 是一个用 TypeScript 编写的库，它可以将任意的 DOM 节点转换为矢量(SVG)或栅格(PNG 或 JPEG)图像。它基于 Paul Bakaus 的 [domvas](https://github.com/pbakaus/domvas)，已经被完全重写，修复了一些 bug，增加了一些新功能(比如 Web 字体和图像支持)。
+ts-dom-to-image 是一个用 TypeScript 编写的库，它可以将任意的 DOM 节点转换为矢量(SVG)或栅格(PNG 或 JPEG)图像。它基于 Paul Bakaus 的 [domvas](https://github.com/pbakaus/domvas)，已经被完全重写，修复了一些 bug，增加了一些新功能(比如 Web 字体和图像支持)。想具体了解的可以移步[SVG+Canvas实现生成海报——不失真](https://juejin.cn/post/7152846260355989534)
 
 # 安装
 **可选用NPM、YARN、PNPM其中一项来安装**
@@ -42,7 +42,7 @@ var domtoimage = require('ts-dom-to-image');
 ```html
 <script src="path/to/dom-to-image.min.js" />
 <script>
-  domtoimage.toPng(node)
+  DomToImage.toPng(node)
   //...
 </script>
 ```
@@ -51,8 +51,8 @@ var domtoimage = require('ts-dom-to-image');
 所有顶级函数都接受 DOM 节点和呈现选项并返回 promise，这些 promise 通过相应的数据 URL 来实现。获取 PNG 图像 base64编码的数据 URL 并立即显示:
 
 ```js
-var node = document.getElementById('my-node');
-window.domtoimage = new DomToImage({targetNode:node,bgColor:'#fff'}); 
+const node = document.getElementById('my-node');
+const domtoimage = new DomToImage({targetNode:node,bgColor:'#fff'}); 
 
 domtoimage.toPng()
     .then(function (dataUrl) {
@@ -132,3 +132,5 @@ Impl 下的所有函数都不是公共 API，只是为了单元测试而公开�
 
  - 如果你想呈现 DOM 节点包含一个带有绘制内容的 canvas 就可（画布受到污染情况除外）
  - ISO中对元素的crossOrigin属性不支持，本解决方案采用XmlHttpRequest拿到资源并通过FileReader转换成Base64。
+ 
+ 
