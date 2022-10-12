@@ -36,7 +36,7 @@ async function publish() {
   // 构建
   shelljs.exec('npm run build')
   // 发布
-  shelljs.exec('npm run publish')
+  shelljs.exec('npm publish')
 }
 /**
  * 同步执行bash命令
