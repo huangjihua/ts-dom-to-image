@@ -1,5 +1,7 @@
-import DomToImage from '../src/index' //TODO jest 针对es6 import的支持问题
-import createImg from './create-image'
+import DomToImage from '../src/index'
+import * as processImage from '../src/process-image'
+import * as processStyle from '../src/process-style'
+import createImg from './method'
 
 function demoDOM() {
   const style = document.createElement('style')
@@ -45,18 +47,14 @@ function demoDOM() {
         <button class="button-blob">生成toBlob图片</button>
       </div>
     </div>`
-  const node = document.querySelector('.c-m-list')
-  // const DomToImage = require('../dist/es/dom-to-image')
-  // window.getComputedStyle = (elt, pseudoElt) => {
-  //   window.getComputedStyle(elt)
-  // } //  RangeError: Maximum call stack size exceeded
+  const node = document.querySelector('.c-m-list') as HTMLElement
+
   const dti = new DomToImage({
     targetNode: node,
     bgColor: '#fff',
     scale: window.devicePixelRatio,
   })
-  // const createImg = require('./create-image')
-  const btn_svg = document.querySelector('.button-svg')
+  const btn_svg = document.querySelector('.button-svg') as HTMLElement
   btn_svg.addEventListener('click', () => {
     createImg(dti, 'toSvg')
     console.log('生成svg', dti['toSvg'])
@@ -64,8 +62,14 @@ function demoDOM() {
 
   return document
 }
-test('loads and display html', () => {
+describe('测试生成不同类型图片', () => {
   const document = demoDOM()
-  document.querySelector('.button-svg').click()
-  expect(document.getElementsByTagName('svg'))
+  test('DOM生成 SVG', () => {
+    // const btn_svg = document.querySelector('.button-svg') as HTMLElement
+    // btn_svg.click()
+    // expect(document.getElementsByTagName('svg'))
+  })
+  test('检测图片元素和样式内的背景图，并转换为内联的 Base64形式', () => {
+    processImage.checkElementImgToInline(document.querySelector('.c-m-list') as HTMLElement)
+  })
 })
