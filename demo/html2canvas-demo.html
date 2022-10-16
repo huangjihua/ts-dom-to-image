@@ -6,7 +6,7 @@
   <meta name="referrer" content="no-referrer" />
   <meta http-equiv="Access-Control-Allow-Origin" content="*">
   <title></title>
-  <script src="https://unpkg.com/ts-dom-to-image@1.0.23/dist/umd/dom-to-image.min.js"></script>
+  <script src="https://html2canvas.hertzen.com/dist/html2canvas.js"></script>
 
   <style>
     @font-face {
@@ -158,7 +158,7 @@
 <body>
 
   <div id="cmBox" class="c-m-box">
-    <div class="title">ts-dom-to-image  umd 测试示例</div>
+    <div class="title">html2Canvas 测试示例</div>
     <div class="c-m-list">
       <div class="img-list">
         <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
@@ -178,49 +178,31 @@
       </div>
     </div>
     <div class="btn-list">
-      <button class="button" onclick="createImg('toSvg')">生成SVG图片</button>
       <button class="button" onclick="createImg('toJpg')">生成JPG图片</button>
       <button class="button" onclick="createImg('toPng')">生成PNG图片</button>
       <button class="button" onclick="createImg('toCanvas')">生成canvas展示</button>
-      <button class="button" onclick="createImg('toBlob')">生成toBlob图片</button>
+
     </div>
   </div>
 
   <script type="text/javascript">
     const node = document.querySelector('.c-m-list')
-    const dtiInstance = new window.DomToImage({ targetNode: node, bgColor: '#fff' });
     function createImg (type) {
       document.querySelector('.img-type').innerHTML = type.replace('to', '')
-      dtiInstance[type]()
-        .then(function (dataUrl) {
-          if (type === 'toCanvas') {
-            document.body.appendChild(dataUrl);
-          } else if (type === 'toSvg') {
-            // console.log(dataUrl);
-            const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
-            document.body.appendChild(createDocumentFragment(svg));
+      html2canvas(node, { useCORS: true }).then(function (canvas) {
+        if (type == 'toCanvas') {
+          document.body.appendChild(canvas);
+        } else if (type === 'toPng') {
+          const img = new Image();
+          img.src = canvas.toDataURL('PNG');
+          document.body.appendChild(img);
+        } else if (type === 'toJpg') {
+          const img = new Image();
+          img.src = canvas.toDataURL('JPEG');
+          document.body.appendChild(img);
+        }
+      });
 
-          } else {
-            if (type === 'toBlob') {
-              dataUrl = URL.createObjectURL(dataUrl)
-              console.log(dataUrl);
-            }
-            const img = new Image();
-            img.src = dataUrl;
-            document.body.appendChild(img);
-            document.body.appendChild(document.createElement('br'));
-          }
-
-        })
-        .catch(function (error) {
-          console.error('oops, something went wrong!', error);
-        });
-    }
-
-    function createDocumentFragment (txt) {
-      const template = `<div class='child'>${txt}</div>`;
-      let frag = document.createRange().createContextualFragment(template);
-      return frag;
     }
 
   </script>
