@@ -1,5 +1,15 @@
-import { xhr } from './xhr'
+import proxy from './proxy'
 import { FILE_ENUM_TYPE } from './type'
+import Cache from './cache'
+
+const INLINE_SVG = /^data:image\/svg\+xml/i;
+const INLINE_IMG = /^data:image\/.*/i;
+const INLINE_BASE64 = /^data:image\/.*;base64,/i;
+const _cache = new Cache();
+export const isInlineSVG = (src: string): boolean => INLINE_SVG.test(src)
+export const isInlineImage = (src: string): boolean => INLINE_IMG.test(src);
+export const isInlineBase64Image = (src: string): boolean => INLINE_BASE64.test(src);
+export const isBlobImage = (src: string): boolean => src.substr(0, 4) === 'blob';
 
 export const checkBrowse = () => {
   const ua = navigator.userAgent
@@ -160,6 +170,9 @@ export const toBlob = (canvas: HTMLCanvasElement) => {
     )
   })
 }
+export const isImageSuportCORS = (): boolean => typeof new Image().crossOrigin !== 'undefined';
+
+export const isResponseTypeToString = (): boolean => typeof new XMLHttpRequest().responseType === 'string';
 
 /**
  * 生成新的 URL
@@ -180,53 +193,27 @@ export const createLinkUrl = (url: string, baseUrl: string): string => {
 }
 
 /**
- * 读取Url 文件并转成Base64字符串
- * @param {Object} props 
-@return {Promise}
- */
-export const readUrlFileToBase64 = (props: {
-  url: string
-  httpTimeout?: number
-  cacheBust?: boolean
-  useCredentials?: boolean
-  imagePlaceholder?: string // base64
-}): Promise<unknown> =>
-  xhr({
-    ...props,
-    successHandle: (
-      request: { response: Blob },
-      resolve: (arg0: string | ArrayBuffer | null) => void,
-    ) => {
-      const reader = new FileReader()
-      // 该事件在读取操作结束时（
-      reader.onloadend = function () {
-        const content = reader.result
-        // if (content && typeof content === 'string') content = content.split(/,/)[1]
-        resolve(content)
-      }
-      reader.onerror = (err) => {
-        console.error('img url reader fail', err)
-      }
-      // 开始读取指定的Blob中的内容。一旦完成，result属性中将包含一个data: URL 格式的 Base64 字符串以表示所读取文件的内容。
-      reader.readAsDataURL(request.response)
-    },
-  })
-
-/**
  * 检测字符内所有的url File,并转成内联的 base64地址
  * @param {string} str
  * @param {string} baseUrl
  * @returns {Promise<string>}
  */
-export const checkStrUrlFile = (str: string, baseUrl?: string) => {
+export function checkStrUrlFile(this: any, str: string, baseUrl?: string) {
   if (!checkStrUrl(str)) return Promise.resolve(str)
   console.log(str, baseUrl)
   const urls = readUrls(str)
   let done = Promise.resolve(str)
+  console.log(_cache)
   urls.forEach((url: string) => {
     done = done.then(async (str) => {
       url = baseUrl ? createLinkUrl(url, baseUrl) : url
-      const content = await readUrlFileToBase64({ url: url })
+      let content;
+      if (_cache.has(url)) {
+        content = _cache.get(url)
+      } else {
+        content = await proxy.call(this, url)
+        _cache.set(url, content as string)
+      }
       // console.log(content);
       return str.replace(urlAsRegex(url), '$1' + content + '$3')
     })
