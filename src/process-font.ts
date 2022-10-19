@@ -4,8 +4,8 @@ import * as util from './utils'
  * @param node
  * @returns
  */
-export const processFonts = (node: HTMLElement) => {
-  const pNewFonts = readAllFont(document.styleSheets)
+export function processFonts(this: any, node: HTMLElement) {
+  const pNewFonts = readAllFont.call(this, document.styleSheets)
   const cssText = Promise.all(
     pNewFonts.map((webFont: { resolve: () => Promise<string> }) =>
       webFont.resolve(),
@@ -14,7 +14,7 @@ export const processFonts = (node: HTMLElement) => {
 
   return cssText.then((cssText: string) => {
     const styleNode = document.createElement('style')
-    console.log(cssText)
+    // console.log(cssText)
     node.appendChild(styleNode)
     styleNode.appendChild(document.createTextNode(cssText))
     return node
@@ -23,10 +23,11 @@ export const processFonts = (node: HTMLElement) => {
 
 /**
  * 解析 document.styleSheets返回新的font
+ * @param {DomToImage}this 隐含的 DomToImage 对象,非参数
  * @param styleSheets
  * @returns {Array} newFont
  */
-function readAllFont(styleSheets: StyleSheetList) {
+function readAllFont(this: any, styleSheets: StyleSheetList) {
   const newFonts: any = []
   const cssRules: Array<any> = []
   for (const sheet of styleSheets) {
@@ -44,7 +45,8 @@ function readAllFont(styleSheets: StyleSheetList) {
     }
   }) => {
     const resolve = () =>
-      util.checkStrUrlFile(
+      util.checkStrUrlFile.call(
+        this,
         rule.cssText,
         rule.parentStyleSheet?.href || undefined,
       )
@@ -54,7 +56,7 @@ function readAllFont(styleSheets: StyleSheetList) {
   try {
     for (const rule of cssRules) {
       if (rule.type === CSSRule.FONT_FACE_RULE) {
-        console.log(rule)
+        // console.log(rule)
         newFonts.push(newWebFont(rule))
       } else if (util.checkStrUrl(rule.style.getPropertyValue('src'))) {
         newFonts.push(newWebFont(rule))
