@@ -22,11 +22,6 @@ export const setCloneNodeStyleProperty = (
   } else {
     for (const key of sourceNodeCssStyle) {
       if (sourceNodeCssStyle.getPropertyValue(key)) {
-        // console.log(
-        //   key,
-        //   sourceNodeCssStyle.getPropertyValue(key),
-        //   sourceNodeCssStyle.getPropertyPriority(key),
-        // )
         if (key !== '-webkit-background-size')
           cloneNodeCssStyle.setProperty(
             key,
@@ -37,35 +32,6 @@ export const setCloneNodeStyleProperty = (
     }
   }
 }
-
-/**
- *  检测图片元素和样式内的背景图，并转换为内联的 Base64形式
- * @param node HTMLELment
- */
-export const checkElementImgToInline = async (node: HTMLElement) => {
-  if (node.style) {
-    const background = node.style.getPropertyValue('background')
-    if (!background) return node
-    const value = await util.checkStrUrlFile(background)
-    console.log('background:', value)
-    if (value)
-      node.style.setProperty(
-        'background',
-        value,
-        node.style.getPropertyPriority('background'),
-      )
-  }
-  const arr = Array.prototype.slice
-    .call(node.childNodes)
-    .filter((child) => child.nodeType === 1)
-  await Promise.all(
-    arr.map((child: HTMLElement) => {
-      return checkElementImgToInline(child)
-    }),
-  )
-  return node
-}
-
 /**
  * 处理元素伪类情况
  * @param {HTMLElement} original  原元素
@@ -110,11 +76,11 @@ export const processNodePseudoStyle = (
  * @param node
  * @returns {void}
  */
-export const processNodeBackground = async (node: HTMLElement) => {
+export async function processNodeBackground(this: any, node: HTMLElement) {
   if (node.style) {
     const background = node.style.getPropertyValue('background')
     if (!background) return node
-    const value = await util.checkStrUrlFile(background)
+    const value = await util.checkStrUrlFile.call(this, background)
     if (value)
       node.style.setProperty(
         'background',
