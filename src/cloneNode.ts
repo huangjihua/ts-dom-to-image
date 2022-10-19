@@ -3,26 +3,24 @@ import { processNodePseudoStyle } from './process-style'
 
 /**
  * 克隆元素
+ * @param {DomToImage}this 隐含的 DomToImage 对象,非参数
  * @param {HTMLElement} node
  * @param {Function} filter
  * @param {boolean} root
  * @returns
  */
-export const cloneNode = async (
-  node: HTMLElement,
-  filter?: Function,
-  root = false,
-) => {
+export async function cloneNode(this: any, node: HTMLElement, root = false) {
+  const { filter } = this.options
   if (!root && filter && !filter(node)) return
   const children = node.childNodes
   const clone: HTMLElement =
     node instanceof HTMLCanvasElement
-      ? await createImage(node.toDataURL())
+      ? await createImage.call(this, node.toDataURL())
       : node.cloneNode(false)
   processNodePseudoStyle(node, clone)
   if (children.length === 0) return clone
   for (const child of children) {
-    cloneNode(child as HTMLElement, filter).then((childClone) => {
+    cloneNode.call(this, child as HTMLElement, filter).then((childClone) => {
       if (childClone) {
         clone.appendChild(childClone)
       }
