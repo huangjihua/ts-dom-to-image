@@ -116,9 +116,9 @@ Impl 下的所有函数都不是公共 API，只是为了单元测试而公开�
 | quality  | number | 1.0 | 一个介于0和1之间的数字，表示 JPEG 图像的图像质量(例如0.92 = > 92%) |
 | imagePlaceholder | string | -- |占位符图像的数据 URL，在获取图像失败时将使用该 URL。默认值为未定义，并将对失败的映像抛出错误|
 | cacheBust | boolean | false |设置为 true 可将当前时间作为查询字符串追加到 URL 请求以启用缓存崩溃 |
-| useCredentials | boolean | false | 对外部 URI（CORS 请求）使用（现有）身份验证凭据 |
+| proxy| string or null | null |  是否利用代理 URL转发加载跨域资源，如为 null，则表示不经过转发|
+| useCORS | boolean | false | 是否开启 CORS设置图片跨域资源共享（设置图片crossOrigin属性）|
 | httpTimeout | number | 30000 | 设置 resolve 超时时间，单位单位秒 |
-| useCredentials | boolean | false | 对外部 URI（CORS 请求）使用（现有）身份验证凭据 |
 | scale | number |  window.devicePixelRatio | 自定义图像缩放比例 |
 
 # 依赖性
