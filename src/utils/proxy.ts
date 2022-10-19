@@ -5,7 +5,7 @@ import { isResponseTypeToString } from "../utils"
  * proxy 参数null 不走转发代理
  *
  * @export
- * @param {DomToImage} this 绑定 this
+ * @param {DomToImage}this 隐含的 DomToImage 对象,非参数
  * @param {string} url
  * @returns {Promise<string>}
  */
