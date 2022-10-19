@@ -1,6 +1,6 @@
 import DomToImage from '../src/index'
 import * as processImage from '../src/process-image'
-import * as processStyle from '../src/process-style'
+// import * as processStyle from '../src/process-style'
 import createImg from './method'
 
 function demoDOM() {
@@ -69,7 +69,7 @@ describe('测试生成不同类型图片', () => {
     // btn_svg.click()
     // expect(document.getElementsByTagName('svg'))
   })
-  test('检测图片元素和样式内的背景图，并转换为内联的 Base64形式', () => {
-    processImage.checkElementImgToInline(document.querySelector('.c-m-list') as HTMLElement)
-  })
+  // test('检测图片元素和样式内的背景图，并转换为内联的 Base64形式', () => {
+  //   processImage.checkElementImgToInline(document.querySelector('.c-m-list') as HTMLElement)
+  // })
 })
