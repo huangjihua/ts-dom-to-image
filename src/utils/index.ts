@@ -2,15 +2,19 @@ import proxy from './proxy'
 import { FILE_ENUM_TYPE } from './type'
 import Cache from './cache'
 
+const INLINE_FONT_IMG = /^data:(image|font)\/.*/i;
 const INLINE_SVG = /^data:image\/svg\+xml/i;
 const INLINE_IMG = /^data:image\/.*/i;
 const INLINE_BASE64 = /^data:image\/.*;base64,/i;
-const _cache = new Cache();
+const CHECK_IMAG = /.(jpg|png|gif|webp)$/i;
+export const isInLineFontOrImage = (src: string): boolean => INLINE_FONT_IMG.test(src)
 export const isInlineSVG = (src: string): boolean => INLINE_SVG.test(src)
 export const isInlineImage = (src: string): boolean => INLINE_IMG.test(src);
 export const isInlineBase64Image = (src: string): boolean => INLINE_BASE64.test(src);
 export const isBlobImage = (src: string): boolean => src.substr(0, 4) === 'blob';
-
+export const isImage = (src: string): boolean => CHECK_IMAG.test(src)
+export const isImageSuportCORS = (): boolean => typeof new Image().crossOrigin !== 'undefined';
+export const isResponseTypeToString = (): boolean => typeof new XMLHttpRequest().responseType === 'string';
 export const checkBrowse = () => {
   const ua = navigator.userAgent
   return {
@@ -30,14 +34,7 @@ export const escape = (props: string) =>
  * 延迟
  * @param delayTime 延迟时间（毫秒）
  */
-export const delay = (delayTime: number) => {
-  return (args: unknown) =>
-    new Promise((resolve) => {
-      setTimeout(() => {
-        resolve(args)
-      }, delayTime)
-    })
-}
+export const delay = (delayTime: number) => new Promise(resolve => setTimeout(resolve, delayTime))
 export const uid = () => {
   let index = 0
   /* see http://stackoverflow.com/a/6248722/2519373 */
@@ -64,8 +61,7 @@ export const asArray = (arrayLike: any) => {
  * @param props String
  * @returns
  */
-export const escapeXhtml = (props: string) =>
-  props.replace(/#/g, '%23').replace(/\n/g, '%0A')
+export const escapeXhtml = (props: string) => props.replace(/#/g, '%23').replace(/\n/g, '%0A')
 /**
  *  处理stylePropertyValue带px
  * @param node HTMLElement
@@ -101,15 +97,6 @@ export const parseExtension = (url: string) => {
 }
 
 /**
- * 判断字符串是否已 data:开头
- * @param url
- * @returns {boolean}
- */
-export const isDataUrl = (url: string) => {
-  return url.search(/^(data:)/) !== -1
-}
-
-/**
  * URL正则
  * @param url
  * @returns {RegExpConstructor}
@@ -136,9 +123,7 @@ export const readUrls = (string: string) => {
   while ((match = URL_REGEX.exec(string)) !== null) {
     result.push(match[1])
   }
-  return result.filter(function (url: string) {
-    return !isDataUrl(url)
-  })
+  return result.filter((url: string) => !isInLineFontOrImage(url))
 }
 
 /**
@@ -170,9 +155,24 @@ export const toBlob = (canvas: HTMLCanvasElement) => {
     )
   })
 }
-export const isImageSuportCORS = (): boolean => typeof new Image().crossOrigin !== 'undefined';
+/**
+ *  将blob转化为dataUrl
+ * 
+ * @export
+ * @param {Blob} blob
+ * @returns
+ */
+export async function blobToDataURL(blob: Blob) {
+  return new Promise((resolve, reject) => {
+    const reader: FileReader = new FileReader()
+    reader.onload = async (e: any) => {
+      resolve(e.target.result)
+    }
+    reader.onerror = (e) => reject(e)
+    reader.readAsDataURL(blob)
+  })
+}
 
-export const isResponseTypeToString = (): boolean => typeof new XMLHttpRequest().responseType === 'string';
 
 /**
  * 生成新的 URL
@@ -200,19 +200,18 @@ export const createLinkUrl = (url: string, baseUrl: string): string => {
  */
 export function checkStrUrlFile(this: any, str: string, baseUrl?: string) {
   if (!checkStrUrl(str)) return Promise.resolve(str)
-  console.log(str, baseUrl)
+  // console.log(str, baseUrl)
   const urls = readUrls(str)
   let done = Promise.resolve(str)
-  console.log(_cache)
   urls.forEach((url: string) => {
     done = done.then(async (str) => {
       url = baseUrl ? createLinkUrl(url, baseUrl) : url
       let content;
-      if (_cache.has(url)) {
-        content = _cache.get(url)
+      if (this._cache.has(url)) {
+        content = this._cache.get(url)
       } else {
         content = await proxy.call(this, url)
-        _cache.set(url, content as string)
+        this._cache.set(url, content as string)
       }
       // console.log(content);
       return str.replace(urlAsRegex(url), '$1' + content + '$3')
