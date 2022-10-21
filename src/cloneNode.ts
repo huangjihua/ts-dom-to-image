@@ -1,4 +1,4 @@
-import { createImage } from './process-image'
+import { loadImage } from './process-image'
 import { processNodePseudoStyle } from './process-style'
 
 /**
@@ -15,8 +15,8 @@ export async function cloneNode(this: any, node: HTMLElement, root = false) {
   const children = node.childNodes
   const clone: HTMLElement =
     node instanceof HTMLCanvasElement
-      ? await createImage.call(this, node.toDataURL())
-      : node.cloneNode(false)
+      ? await loadImage.call(this, node.toDataURL())
+      : (node.cloneNode(false) as HTMLElement)
   processNodePseudoStyle(node, clone)
   if (children.length === 0) return clone
   for (const child of children) {

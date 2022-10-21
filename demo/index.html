@@ -198,6 +198,7 @@
       document.querySelector('.img-type').innerHTML = type.replace('to', '')
       window.domtoimage[type]()
         .then(function (dataUrl) {
+          if (!dataUrl) return
           if (type === 'toCanvas') {
             document.body.appendChild(dataUrl);
           } else if (type === 'toSvg') {
@@ -205,15 +206,20 @@
             const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
             document.body.appendChild(createDocumentFragment(svg));
 
-          } else {
+          }
+          else {
             if (type === 'toBlob') {
               dataUrl = URL.createObjectURL(dataUrl)
               console.log(dataUrl);
             }
             const img = new Image();
             img.src = dataUrl;
-            document.body.appendChild(img);
-            document.body.appendChild(document.createElement('br'));
+            // document.body.appendChild(img);
+            // document.body.appendChild(document.createElement('br'));
+            img.onload = () => {
+              document.body.appendChild(img);
+              document.body.appendChild(document.createElement('br'));
+            }
           }
 
         })
@@ -223,8 +229,8 @@
     }
 
     function createDocumentFragment (txt) {
-      const template = `<div class='child'>${txt}</div>`;
-      let frag = document.createRange().createContextualFragment(template);
+      // const template = `<div class='child'>${txt}</div>`;
+      let frag = document.createRange().createContextualFragment(txt);
       return frag;
     }
 

@@ -1,12 +1,13 @@
 import * as util from './utils'
+import Cache from './utils/cache'
 import { cloneNode } from './cloneNode'
 import { processFonts } from './process-font'
-import { createImage, checkElementImgToInline } from './process-image'
+import { loadImage, checkElementImgToInline } from './process-image'
 import { createSvgEncodeUrl } from './createSvg'
 import { FILE_ENUM_TYPE, DOM_TO_IMAGE_OPTIONS } from './utils/type'
-
 export default class DomToImage {
   public options
+  public _cache
   /**
    * constructor
    * @param props 渲染参数
@@ -21,6 +22,9 @@ export default class DomToImage {
       scale: window.devicePixelRatio,
     }
     this.options = { ...defaultValue, ...options }
+    this._cache = new Cache()
+    // mac/ios 可能会第一次绘制失败
+    // this.drawCanvas()
   }
   toSvg() {
     return this.inlineBase64Svg()
@@ -66,10 +70,33 @@ export default class DomToImage {
 
   private async drawCanvas() {
     const svg = await this.inlineBase64Svg()
-    const image: any = await createImage.call(this, svg)
-    const canvas = this.creatCanvas()
-    const context = canvas.getContext('2d')
-    if (context) context.drawImage(image, 0, 0, canvas.width, canvas.height)
+    const imageEle = await loadImage.call(this, svg)
+    const canvas = document.createElement('canvas')
+    const isApple = /(iPhone|iPad|iPod|iOS|AppleWebKit)/i.test(
+      navigator.userAgent,
+    )
+    // mac & ios 必须在可是区域显示图
+    if (isApple) {
+      imageEle.style.cssText =
+        'position:absolute;top:0;left:0;opacity: 0.01;z-index: -1;'
+      document.body.appendChild(imageEle)
+      await util.delay(3000)
+    }
+    canvas.width =
+      (this.options.width || util.width(this.options.targetNode)) *
+      this.options.scale
+    canvas.height =
+      (this.options.height || util.height(this.options.targetNode)) *
+      this.options.scale
+    if (this.options.bgColor) {
+      const ctx = canvas.getContext('2d')
+      if (ctx) {
+        ctx.fillStyle = this.options.bgColor
+        ctx.fillRect(0, 0, canvas.width, canvas.height)
+        ctx.drawImage(imageEle, 0, 0, canvas.width, canvas.height)
+      }
+    }
+    console.log(this._cache)
     return Promise.resolve(canvas)
   }
 
@@ -109,23 +136,5 @@ export default class DomToImage {
       clone.style[style] = styles[style]
     }
     return clone
-  }
-
-  private creatCanvas() {
-    const canvas = document.createElement('canvas')
-    canvas.width =
-      (this.options.width || util.width(this.options.targetNode)) *
-      this.options.scale
-    canvas.height =
-      (this.options.height || util.height(this.options.targetNode)) *
-      this.options.scale
-    if (this.options.bgColor) {
-      const ctx = canvas.getContext('2d')
-      if (ctx) {
-        ctx.fillStyle = this.options.bgColor
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-      }
-    }
-    return canvas
   }
 }
