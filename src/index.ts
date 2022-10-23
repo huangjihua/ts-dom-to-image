@@ -23,11 +23,9 @@ export default class DomToImage {
     }
     this.options = { ...defaultValue, ...options }
     this._cache = new Cache()
-    // mac/ios 可能会第一次绘制失败
-    // this.drawCanvas()
   }
   toSvg() {
-    return this.inlineBase64Svg()
+    return this.inlineBase64Svg(true)
   }
   toPng() {
     return this.drawCanvas().then((canvas) =>
@@ -70,30 +68,36 @@ export default class DomToImage {
 
   private async drawCanvas() {
     const svg = await this.inlineBase64Svg()
-    const imageEle = await loadImage.call(this, svg)
     const canvas = document.createElement('canvas')
-    const isApple = /(iPhone|iPad|iPod|iOS|AppleWebKit)/i.test(
-      navigator.userAgent,
-    )
-    // mac & ios 必须在可是区域显示图
-    if (isApple) {
-      imageEle.style.cssText =
-        'position:absolute;top:0;left:0;opacity: 0.01;z-index: -1;'
-      document.body.appendChild(imageEle)
-      await util.delay(3000)
-    }
-    canvas.width =
-      (this.options.width || util.width(this.options.targetNode)) *
-      this.options.scale
-    canvas.height =
-      (this.options.height || util.height(this.options.targetNode)) *
-      this.options.scale
-    if (this.options.bgColor) {
-      const ctx = canvas.getContext('2d')
-      if (ctx) {
-        ctx.fillStyle = this.options.bgColor
-        ctx.fillRect(0, 0, canvas.width, canvas.height)
-        ctx.drawImage(imageEle, 0, 0, canvas.width, canvas.height)
+    if (typeof svg === 'string') {
+      let imageEle = await loadImage.call(this, svg)
+      const isApple = /(iPhone|iPad|iPod|iOS|AppleWebKit)/i.test(
+        navigator.userAgent,
+      )
+      // mac & ios 必须在可是区域显示图
+      if (isApple) {
+        imageEle.id = 'pre-load-image'
+        imageEle.style.cssText =
+          'position:absolute;top:0;left:0;opacity: 0.01;z-index: -1;'
+        const imgEle = document.getElementById('pre-load-image')
+        if (!imgEle) {
+          document.body.appendChild(imageEle)
+          await util.delay(3000)
+        }
+      }
+      canvas.width =
+        (this.options.width || util.width(this.options.targetNode)) *
+        this.options.scale
+      canvas.height =
+        (this.options.height || util.height(this.options.targetNode)) *
+        this.options.scale
+      if (this.options.bgColor) {
+        const ctx = canvas.getContext('2d')
+        if (ctx) {
+          ctx.fillStyle = this.options.bgColor
+          ctx.fillRect(0, 0, canvas.width, canvas.height)
+          ctx.drawImage(imageEle, 0, 0, canvas.width, canvas.height)
+        }
       }
     }
     console.log(this._cache)
@@ -107,7 +111,7 @@ export default class DomToImage {
    * @returns {string}
    * @memberof DomToImage
    */
-  private inlineBase64Svg() {
+  private inlineBase64Svg(isReturnSvgELement = false) {
     return Promise.resolve()
       .then((): any => cloneNode.call(this, this.options.targetNode, true))
       .then(processFonts.bind(this))
@@ -119,6 +123,7 @@ export default class DomToImage {
           clone,
           this.options.width || util.width(this.options.targetNode),
           this.options.height || util.height(this.options.targetNode),
+          isReturnSvgELement,
         )
       })
   }
