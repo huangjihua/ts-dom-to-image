@@ -9,10 +9,10 @@
   <script src="./es/dom-to-image.js" type="module"></script>
 
   <style>
-    @font-face {
+    /* @font-face {
       font-family: LiuJianMaoCao-Regular;
       src: url('LiuJianMaoCao-Regular.ttf');
-    }
+    } */
 
     @font-face {
       font-family: MesloLG;
@@ -62,7 +62,7 @@
     .c-m-title {
       font-size: 12px;
       color: indianred;
-      font-family: LiuJianMaoCao-Regular;
+      /* font-family: LiuJianMaoCao-Regular; */
     }
 
     .en-txt {
@@ -161,7 +161,6 @@
     <div class="title">ts-dom-to-image => es 测试示例</div>
     <div class="c-m-list">
       <div class="img-list">
-        <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
         <img src="./img/moto.png" alt="" class="c-m-img">
         <div class="img2"></div>
         <div class="img3">
@@ -203,9 +202,8 @@
             document.body.appendChild(dataUrl);
           } else if (type === 'toSvg') {
             // console.log(dataUrl);
-            const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
-            document.body.appendChild(createDocumentFragment(svg));
-
+            // const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
+            document.body.appendChild(dataUrl);
           }
           else {
             if (type === 'toBlob') {
@@ -233,7 +231,6 @@
       let frag = document.createRange().createContextualFragment(txt);
       return frag;
     }
-
   </script>
 </body>
 
