@@ -24,11 +24,9 @@ export default class DomToImage {
     }
     this.options = { ...defaultValue, ...options }
     this._cache = new Cache()
-    // mac/ios 可能会第一次绘制失败
-    // this.drawCanvas()
   }
   toSvg() {
-    return this.inlineBase64Svg()
+    return this.inlineBase64Svg(true)
   }
   toPng() {
     return this.drawCanvas().then((canvas) =>
@@ -71,7 +69,7 @@ export default class DomToImage {
 
   private async drawCanvas() {
     const svg = await this.inlineBase64Svg()
-    const imageEle = await loadImage.call(this, svg)
+    const imageEle = await loadImage.call(this, svg as string)
     const isApple = /(iPhone|iPad|iPod|iOS|AppleWebKit)/i.test(
       navigator.userAgent,
     )
@@ -112,7 +110,7 @@ export default class DomToImage {
    * @returns {string}
    * @memberof DomToImage
    */
-  private inlineBase64Svg() {
+  private inlineBase64Svg(isReturnSvgELement = false) {
     return Promise.resolve()
       .then((): any => cloneNode.call(this, this.options.targetNode, true))
       .then(processFonts.bind(this))
@@ -124,6 +122,7 @@ export default class DomToImage {
           clone,
           this.options.width || util.width(this.options.targetNode),
           this.options.height || util.height(this.options.targetNode),
+          isReturnSvgELement,
         )
       })
   }

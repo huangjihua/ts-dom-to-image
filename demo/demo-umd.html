@@ -158,7 +158,7 @@
 <body>
 
   <div id="cmBox" class="c-m-box">
-    <div class="title">ts-dom-to-image  umd 测试示例</div>
+    <div class="title">ts-dom-to-image umd 测试示例</div>
     <div class="c-m-list">
       <div class="img-list">
         <!-- <img src="./img/1.jpeg" alt="长天" class="c-m-img"> -->
@@ -196,9 +196,7 @@
           if (type === 'toCanvas') {
             document.body.appendChild(dataUrl);
           } else if (type === 'toSvg') {
-            // console.log(dataUrl);
-            const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
-            document.body.appendChild(createDocumentFragment(svg));
+            document.body.appendChild(dataUrl);
 
           } else {
             if (type === 'toBlob') {

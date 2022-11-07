@@ -23,7 +23,7 @@
 
     .btn-list {
       padding-bottom: 10px;
-      
+
     }
   </style>
 
@@ -60,9 +60,7 @@
           if (type === 'toCanvas') {
             document.body.appendChild(dataUrl);
           } else if (type === 'toSvg') {
-            // console.log(dataUrl);
-            const svg = dataUrl.replace('data:image/svg+xml;charset=utf-8,', '').replace(/\%0A/g, '');
-            document.body.appendChild(createDocumentFragment(svg));
+            document.body.appendChild(dataUrl);
 
           } else {
             if (type === 'toBlob') {

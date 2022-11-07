@@ -12,6 +12,7 @@ import { processNodePseudoStyle } from './process-style'
 export async function cloneNode(this: any, node: HTMLElement, root = false) {
   const { filter } = this.options
   if (!root && filter && !filter(node)) return
+  if (node.nodeType === 8) return // 排除注释
   const children = node.childNodes
   const clone: HTMLElement =
     node instanceof HTMLCanvasElement
