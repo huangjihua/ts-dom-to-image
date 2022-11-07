@@ -25,4 +25,6 @@ export type DOM_TO_IMAGE_OPTIONS = {
   useCORS?: boolean // 对外部 URI（CORS 请求）使用（现有）身份验证凭据
   httpTimeout?: number // 设置 resolve 超时时间，单位单位秒
   scale?: number // 自定义图像缩放比例,用于保障图像质量
+  iosFix?: boolean // 处理 ios中绘制图片丢失问题
+  beforeDrawCanvasCallback?: Function // 绘制 Canvas之前处理函数
 }

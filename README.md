@@ -105,22 +105,23 @@ Impl 下的所有函数都不是公共 API，只是为了单元测试而公开�
 # options 渲染选项
 
  
-| 属性 | 类型 | 默认值 | 说明
-| --- | --- | --- | --- |
-| targetNode| HTMLElement | 生成图片的目标元素 |
-| width | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|
-| height | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|
-| bgcolor | string | -- |设置背景色，CSS 颜色值 |
-| style | CSSStyleDeclaration | -- | 样式属性对象 |
-| filter | function | -- |一个以 DOM 节点为参数的函数。如果传递的节点应该包含在输出中，那么应该返回 true (排除节点意味着也排除它的子节点)。未在根节点上调用|
-| quality  | number | 1.0 | 一个介于0和1之间的数字，表示 JPEG 图像的图像质量(例如0.92 = > 92%) |
-| imagePlaceholder | string | -- |占位符图像的数据 URL，在获取图像失败时将使用该 URL。默认值为未定义，并将对失败的映像抛出错误|
-| cacheBust | boolean | false |设置为 true 可将当前时间作为查询字符串追加到 URL 请求以启用缓存崩溃 |
-| proxy| string or null | null |  是否利用代理 URL转发加载跨域资源，如为 null，则表示不经过转发|
-| useCORS | boolean | false | 是否开启 CORS设置图片跨域资源共享（设置图片crossOrigin属性）|
-| httpTimeout | number | 30000 | 设置 resolve 超时时间，单位单位秒 |
-| scale | number |  window.devicePixelRatio | 自定义图像缩放比例 |
-
+| 属性 | 类型 | 默认值 | 说明|必填项|
+| --- | --- | --- | --- |---|
+| targetNode| HTMLElement | 生成图片的目标元素| -- |是|
+| width | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|否|
+| height | number | -- |呈现前应用于节点的高度和宽度(以像素为单位)|否|
+| bgcolor | string | -- |设置背景色，CSS 颜色值 |否|
+| style | CSSStyleDeclaration | -- | 样式属性对象 |否|
+| filter | function | -- |一个以 DOM 节点为参数的函数。如果传递的节点应该包含在输出中，那么应该返回 true (排除节点意味着也排除它的子节点)。未在根节点上调用|否|
+| quality  | number | 1.0 | 一个介于0和1之间的数字，表示 JPEG 图像的图像质量(例如0.92 = > 92%) |否|
+| imagePlaceholder | string | -- |占位符图像的数据 URL，在获取图像失败时将使用该 URL。默认值为未定义，并将对失败的映像抛出错误|否|
+| cacheBust | boolean | false |设置为 true 可将当前时间作为查询字符串追加到 URL 请求以启用缓存崩溃 |否|
+| proxy| string or null | null |  是否利用代理 URL转发加载跨域资源，如为 null，则表示不经过转发|否|
+| useCORS | boolean | false | 是否开启 CORS设置图片跨域资源共享（设置图片crossOrigin属性）|否|
+| httpTimeout | number | 30000 | 设置 resolve 超时时间，单位单位秒 |否|
+| scale | number |  window.devicePixelRatio | 自定义图像缩放比例 |否|
+| iosFix | boolean | true| 处理 ios中绘制图片丢失问题|否|
+| beforeDrawCanvasCallback|Function|绘制 Canvas之前处理函数|否|
 # 依赖性
  
  当前只是使用标准库，但要确保浏览器支持：

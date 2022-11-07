@@ -20,6 +20,7 @@ export default class DomToImage {
       useCORS: false,
       httpTimeout: 30000,
       scale: window.devicePixelRatio,
+      iosFix: true,
     }
     this.options = { ...defaultValue, ...options }
     this._cache = new Cache()
@@ -71,17 +72,21 @@ export default class DomToImage {
   private async drawCanvas() {
     const svg = await this.inlineBase64Svg()
     const imageEle = await loadImage.call(this, svg)
-    const canvas = document.createElement('canvas')
     const isApple = /(iPhone|iPad|iPod|iOS|AppleWebKit)/i.test(
       navigator.userAgent,
     )
+    // 绘制 canvas 之前回调
+    if (this.options.beforeDrawCanvasCallback instanceof Function) {
+      this.options.beforeDrawCanvasCallback({ svg, imageEle, isApple })
+    }
     // mac & ios 必须在可是区域显示图
-    if (isApple) {
+    if (this.options.iosFix && isApple) {
       imageEle.style.cssText =
         'position:absolute;top:0;left:0;opacity: 0.01;z-index: -1;'
       document.body.appendChild(imageEle)
-      await util.delay(3000)
+      await util.delay(2000)
     }
+    const canvas = document.createElement('canvas')
     canvas.width =
       (this.options.width || util.width(this.options.targetNode)) *
       this.options.scale
